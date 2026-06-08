@@ -1,0 +1,20 @@
+# Template for the secrets needed to PUBLISH Argot to Maven Central.
+#
+# Do NOT put real values in this repo. Copy the entries you need into your *user-level* Gradle
+# properties at ~/.gradle/gradle.properties, or provide them as environment variables of the form
+# ORG_GRADLE_PROJECT_<name> (this is how the release CI workflow injects them from GitHub Secrets).
+#
+# None of these are required for `./gradlew build` or for local development against -SNAPSHOT.
+
+# --- Maven Central (Central Portal) ---
+# Generate a user token at https://central.sonatype.com/account.
+mavenCentralUsername=YOUR_CENTRAL_PORTAL_TOKEN_USERNAME
+mavenCentralPassword=YOUR_CENTRAL_PORTAL_TOKEN_PASSWORD
+
+# --- GPG signing (in-memory key) ---
+# Export the ASCII-armored private key with:  gpg --armor --export-secret-keys <KEY_ID>
+# Replace real newlines with \n so the whole key is a single property line.
+signingInMemoryKey=-----BEGIN PGP PRIVATE KEY BLOCK-----\n...\n-----END PGP PRIVATE KEY BLOCK-----
+signingInMemoryKeyPassword=YOUR_GPG_KEY_PASSPHRASE
+# Optional: only needed when your keyring holds more than one secret key.
+# signingInMemoryKeyId=0A1B2C3D

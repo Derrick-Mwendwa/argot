@@ -1,6 +1,13 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
-    // mavenPublish is applied in Milestone 6.
+    alias(libs.plugins.mavenPublish)
+}
+
+mavenPublishing {
+    pom {
+        name.set("Argot Processor")
+        description.set("KSP2 processor that generates argument parsers from Argot annotations.")
+    }
 }
 
 kotlin {

@@ -43,3 +43,12 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Secrets / signing (never commit real publishing credentials) ###
+local.properties
+gradle.properties.local
+secring.gpg
+*.gpg
+*.asc
+*.jks
+*.p12
