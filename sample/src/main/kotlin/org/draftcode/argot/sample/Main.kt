@@ -5,7 +5,7 @@ package org.draftcode.argot.sample
  *
  * The first argument selects a command, demonstrating both consumer styles in one app:
  * - `greet` — the delegate style ([GreetArgs]);
- * - `serve` — the annotation style (added in Milestone 5).
+ * - `serve` — the annotation style ([ServeArgs], parsed by the generated `parseServeArgs`).
  *
  * This is plain `when` routing, not Argot subcommand support (subcommands are out of scope for v1).
  */
@@ -13,11 +13,13 @@ public fun main(argv: Array<String>) {
     val rest = if (argv.isEmpty()) argv else argv.copyOfRange(1, argv.size)
     when (argv.firstOrNull()) {
         "greet" -> runGreet(rest)
+        "serve" -> runServe(rest)
         else -> {
             System.err.println("Usage: sample <command> [options]")
             System.err.println()
             System.err.println("Commands:")
             System.err.println("  greet   Print a greeting (delegate style)")
+            System.err.println("  serve   Run the server (annotation style)")
         }
     }
 }

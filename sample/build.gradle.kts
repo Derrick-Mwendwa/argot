@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ksp)
     application
-    // KSP (with argot-processor) is wired in Milestone 5, when the annotation command is added.
 }
 
 kotlin {
@@ -13,6 +13,9 @@ kotlin {
 dependencies {
     implementation(project(":argot-core"))
     implementation(project(":argot-annotations"))
+
+    // Wires the annotation style through the real KSP2 processor, exercising it end-to-end.
+    ksp(project(":argot-processor"))
 
     testImplementation(kotlin("test"))
 }

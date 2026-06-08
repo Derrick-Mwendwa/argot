@@ -22,6 +22,9 @@ dependencies {
 
     testImplementation(kotlin("test"))
     testImplementation(libs.kctfork.ksp)
+    // Test-only: the generated code references argot-core, so it must be on the compile-testing
+    // classpath (inheritClassPath). argot-core is NOT a main dependency of the processor.
+    testImplementation(project(":argot-core"))
 }
 
 tasks.test {
