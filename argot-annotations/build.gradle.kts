@@ -18,6 +18,7 @@ mavenPublishing {
 // argot-annotations holds only the annotation declarations consumed by the KSP processor.
 // Constraint: zero third-party runtime dependencies — stdlib only.
 dependencies {
+    testImplementation(platform(libs.junit.bom))
     testImplementation(kotlin("test"))
 }
 

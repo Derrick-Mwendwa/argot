@@ -11,6 +11,9 @@ ksp = "2.3.9"
 kotlinpoet = "2.3.0"
 mavenPublish = "0.36.0"
 kctfork = "0.13.0"
+# JUnit 5 is used only by tests (via kotlin-test's JUnit Platform runner). Pinned here so the
+# catalog is the single source of versions; this matches what kotlin-test resolves transitively.
+junit = "5.10.1"
 
 [libraries]
 # Compile-time only (argot-processor): KSP API + KotlinPoet. Never on a consumer runtime classpath.
@@ -20,6 +23,9 @@ kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlin
 
 # Test-only: KSP2-capable compile-testing fork for processor negative tests.
 kctfork-ksp = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kctfork" }
+
+# Test-only: aligns the JUnit 5 platform (used by kotlin-test) to the catalog-pinned version.
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

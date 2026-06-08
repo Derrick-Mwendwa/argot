@@ -17,6 +17,7 @@ dependencies {
     // Wires the annotation style through the real KSP2 processor, exercising it end-to-end.
     ksp(project(":argot-processor"))
 
+    testImplementation(platform(libs.junit.bom))
     testImplementation(kotlin("test"))
 }
 

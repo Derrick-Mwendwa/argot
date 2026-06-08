@@ -27,6 +27,7 @@ dependencies {
     // Referenced for annotation fully-qualified names only.
     implementation(project(":argot-annotations"))
 
+    testImplementation(platform(libs.junit.bom))
     testImplementation(kotlin("test"))
     testImplementation(libs.kctfork.ksp)
     // Test-only: the generated code references argot-core, so it must be on the compile-testing
