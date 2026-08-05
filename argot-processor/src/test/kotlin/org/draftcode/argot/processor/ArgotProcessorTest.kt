@@ -86,6 +86,12 @@ class ArgotProcessorTest {
         assertContains(text, "\n    val spec = CommandSpec(", message = "expected four-space indentation")
         assertContains(text, ")\n\n    val parsed = ", message = "expected a blank line before the parse call")
         assertContains(text, "argv)\n\n    return ", message = "expected a blank line before the constructor call")
+
+        assertContains(text, "OptionSpec(\n", message = "expected each spec argument on its own line")
+        assertContains(text, "\n                names = listOf(\"--port\", \"-p\"),\n", message = "expected wrapped arguments")
+
+        val longest = text.lines().maxOf { it.length }
+        assertTrue(longest <= 100, "generated code should stay within 100 columns, longest line was $longest")
     }
 
     @Test
