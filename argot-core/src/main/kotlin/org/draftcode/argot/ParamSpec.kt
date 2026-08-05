@@ -1,28 +1,20 @@
 package org.draftcode.argot
 
-/**
- * A single declared command-line parameter.
- *
- * Both consumer styles (delegates and annotations) build a list of [ParamSpec] and hand it to the
- * engine, so parsing behavior is identical regardless of how the spec was authored. This is a
- * sealed hierarchy: every parameter is exactly one of [OptionSpec], [FlagSpec], or [ArgumentSpec].
- */
+/** A declared command-line parameter: an [OptionSpec], [FlagSpec], or [ArgumentSpec]. */
 public sealed class ParamSpec {
-    /** Human-readable help shown for this parameter in `--help` output. */
+    /** Help text shown for this parameter in `--help`. */
     public abstract val help: String
 }
 
 /**
- * A value-bearing named parameter, for example `--count 3`, `--count=3`, or `-c 3`.
+ * A named parameter that takes a value, for example `--count 3`, `--count=3`, or `-c 3`.
  *
- * @param names the option's names, primary first (for example `["--count", "-c"]`). At least one
- *   is required, and the first is the canonical lookup key in [ParsedValues].
- * @param help help text for `--help`.
+ * @param names the option's names, primary first, for example `["--count", "-c"]`.
  * @param converter converts each raw value to the typed result.
- * @param required whether at least one occurrence must be supplied. For a [multiple] option,
- *   `required` means at least one occurrence is mandatory; otherwise an empty list is produced.
- * @param default the already-converted value used when the option is absent (single-valued only).
- * @param multiple when true, repeats accumulate into a list; when false, a second occurrence is a
+ * @param help help text for `--help`.
+ * @param required whether at least one occurrence must be supplied.
+ * @param default the already-converted value used when a single-valued option is absent.
+ * @param multiple when true repeats accumulate into a list; when false a second occurrence is an
  *   [ArgotParseException.DuplicateValue].
  */
 public class OptionSpec(
@@ -37,17 +29,16 @@ public class OptionSpec(
         require(names.isNotEmpty()) { "OptionSpec requires at least one name" }
     }
 
-    /** The canonical name (first of [names]), used as the lookup key in [ParsedValues]. */
+    /** The first of [names], used as the lookup key in [ParsedValues]. */
     public val primaryName: String get() = names.first()
 }
 
 /**
- * A boolean named parameter whose presence implies `true`.
+ * A named boolean parameter whose presence means `true`.
  *
- * @param names the flag's names, primary first (for example `["--verbose", "-v"]`).
+ * @param names the flag's names, primary first, for example `["--verbose", "-v"]`.
  * @param help help text for `--help`.
- * @param negationNames optional names that explicitly set the flag to `false` (for example
- *   `["--no-verbose"]`). Optional in v1.
+ * @param negationNames names that set the flag to `false`, for example `["--no-verbose"]`.
  * @param default the value used when neither a name nor a negation name is present.
  */
 public class FlagSpec(
@@ -60,20 +51,19 @@ public class FlagSpec(
         require(names.isNotEmpty()) { "FlagSpec requires at least one name" }
     }
 
-    /** The canonical name (first of [names]), used as the lookup key in [ParsedValues]. */
+    /** The first of [names], used as the lookup key in [ParsedValues]. */
     public val primaryName: String get() = names.first()
 }
 
 /**
  * A positional parameter, consumed left to right from the non-option arguments.
  *
- * @param name the parameter name, used for help and as the lookup key in [ParsedValues].
+ * @param name the parameter name, shown in help and used as the lookup key in [ParsedValues].
  * @param converter converts each raw value to the typed result.
  * @param help help text for `--help`.
- * @param required whether at least one value must be supplied. For a [multiple] positional,
- *   `required` means "at least one".
- * @param multiple when true, captures all remaining positionals into a list. At most one
- *   `multiple` positional is allowed per command, and it must be declared last.
+ * @param required whether at least one value must be supplied.
+ * @param multiple when true, captures all remaining positionals. At most one parameter per command
+ *   may set this, and it must be declared last.
  */
 public class ArgumentSpec(
     public val name: String,

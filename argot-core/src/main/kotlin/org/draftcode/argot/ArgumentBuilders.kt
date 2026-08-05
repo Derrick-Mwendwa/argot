@@ -5,15 +5,13 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
- * A fluent builder for a single positional [argument][Arguments.argument], required by default.
- * Also a [PropertyDelegateProvider]. The argument's name is taken from the delegated property.
+ * Builds a positional argument, named after the property it is assigned to. The call you end with
+ * decides the property's type:
+ * - end here and the argument is required and non-null;
+ * - [optional] makes it nullable, resolving to `null` when absent;
+ * - [multiple] captures all remaining positionals into a `List<T>`.
  *
- * The terminal call determines the delegated type and so the property's nullability:
- * - **bare** (this builder): required; resolves to a non-null value;
- * - [optional]: resolves to `null` when absent, so it backs a nullable property;
- * - [multiple]: a trailing list that captures the rest (see [ArgumentListBuilder]).
- *
- * Refine the value type (`.int()`, `.enum<E>()`, `.convert(...)`) **before** choosing cardinality.
+ * Refine the value type (`.int()`, `.enum<E>()`, `.convert(...)`) before choosing cardinality.
  *
  * @param T the argument's value type.
  */
@@ -22,26 +20,22 @@ public class ArgumentBuilder<T : Any> internal constructor(
     private val converter: Converter<T>,
 ) : PropertyDelegateProvider<Arguments, ReadOnlyProperty<Arguments, T>> {
 
-    /** Refines the value type using a custom [converter]. */
     public fun <R : Any> convert(converter: Converter<R>): ArgumentBuilder<R> =
         ArgumentBuilder(help, converter)
 
-    /** Refines the value type to [Int]. */
     public fun int(): ArgumentBuilder<Int> = convert(IntConverter)
 
-    /** Refines the value type to [Long]. */
     public fun long(): ArgumentBuilder<Long> = convert(LongConverter)
 
-    /** Refines the value type to [Double]. */
     public fun double(): ArgumentBuilder<Double> = convert(DoubleConverter)
 
-    /** Refines the value type to the enum [E], matching constant names case-insensitively. */
+    /** Parses the value as the enum [E], matching constant names case-insensitively. */
     public inline fun <reified E : Enum<E>> enum(): ArgumentBuilder<E> = convert(enumConverter<E>())
 
     /** Makes the argument optional; it resolves to `null` when absent. */
     public fun optional(): OptionalArgumentBuilder<T> = OptionalArgumentBuilder(help, converter)
 
-    /** Switches to a trailing list argument that captures all remaining positionals. */
+    /** Captures all remaining positionals into a `List<T>`. Must be the last argument declared. */
     public fun multiple(): ArgumentListBuilder<T> = ArgumentListBuilder(help, converter)
 
     override operator fun provideDelegate(
@@ -57,8 +51,8 @@ public class ArgumentBuilder<T : Any> internal constructor(
 }
 
 /**
- * A fluent builder for an optional positional [argument][Arguments.argument], reached via
- * [ArgumentBuilder.optional]. Resolves to `null` when absent.
+ * An optional positional argument, reached via [ArgumentBuilder.optional]. Resolves to `null` when
+ * absent.
  *
  * @param T the argument's value type.
  */
@@ -80,9 +74,8 @@ public class OptionalArgumentBuilder<T : Any> internal constructor(
 }
 
 /**
- * A fluent builder for a trailing list [argument][Arguments.argument] that captures the rest of the
- * positionals. Reached via [ArgumentBuilder.multiple]. Resolves to an empty list when none are
- * supplied unless [required] is set.
+ * A trailing list argument, reached via [ArgumentBuilder.multiple]. Resolves to an empty list when
+ * no positionals remain, unless [required] is set.
  *
  * @param T the element type.
  */

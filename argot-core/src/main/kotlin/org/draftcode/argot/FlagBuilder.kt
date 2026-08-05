@@ -5,11 +5,8 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
- * A fluent builder for a boolean [flag][Arguments.flag]. Also a [PropertyDelegateProvider], so a
- * `Boolean` property can delegate to it directly with `by`.
- *
- * Presence of a flag name implies `true`; presence of a negation name implies `false`; absence
- * resolves to the configured [default].
+ * Builds a boolean flag. A flag name means `true`, a negation name means `false`, and absence means
+ * [default].
  */
 public class FlagBuilder internal constructor(
     private val names: List<String>,
@@ -22,7 +19,7 @@ public class FlagBuilder internal constructor(
     public fun default(value: Boolean): FlagBuilder =
         FlagBuilder(names, help, negationNames, value)
 
-    /** Adds explicit negation names (for example `"--no-verbose"`) that set the flag to `false`. */
+    /** Adds names that set the flag to `false`, for example `"--no-verbose"`. */
     public fun negatedBy(vararg negation: String): FlagBuilder =
         FlagBuilder(names, help, negationNames + negation.toList(), default)
 

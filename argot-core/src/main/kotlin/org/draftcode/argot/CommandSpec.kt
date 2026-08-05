@@ -1,17 +1,12 @@
 package org.draftcode.argot
 
 /**
- * The complete specification of a command: its identity, description, optional version, and the
- * ordered list of parameters.
+ * Describes a command: its name, description, optional version, and parameters.
  *
- * A [CommandSpec] owns validation of its own shape (see [validate]) and the rendering of `--help`
- * and usage output (see [renderHelp] and [renderUsage]). Because both consumer styles produce a
- * [CommandSpec] and hand it to [ArgotEngine], their help output and parsing behavior are identical.
- *
- * @param programName the program name shown in usage (for example `serve`).
- * @param description a one-line description shown at the top of `--help` (may be blank).
- * @param params the declared parameters, in declaration order.
- * @param version an optional version string; when non-null, `--version` is recognized.
+ * @param programName the program name shown in usage.
+ * @param description a one-line description shown at the top of `--help`.
+ * @param params the declared parameters, in the order they should appear in `--help`.
+ * @param version when set, `--version` is recognized and prints this string.
  */
 public class CommandSpec(
     public val programName: String,
@@ -19,24 +14,15 @@ public class CommandSpec(
     public val params: List<ParamSpec>,
     public val version: String? = null,
 ) {
-    /** The named value-bearing options, in declaration order. */
     internal val options: List<OptionSpec> = params.filterIsInstance<OptionSpec>()
-
-    /** The boolean flags, in declaration order. */
     internal val flags: List<FlagSpec> = params.filterIsInstance<FlagSpec>()
-
-    /** The positional arguments, in declaration order. */
     internal val arguments: List<ArgumentSpec> = params.filterIsInstance<ArgumentSpec>()
 
     /**
-     * Validates the *shape* of this specification and throws [IllegalArgumentException] if it is
-     * malformed. This guards against programming errors (duplicate names, an ill-placed `multiple`
-     * positional, blank names, and so on); user-input errors are reported separately as
-     * [ArgotParseException]s during parsing.
+     * Checks this specification for problems such as duplicate names, blank names, or a misplaced
+     * `multiple` positional.
      *
-     * The delegate DSL and the generated annotation code always produce valid specifications, so in
-     * practice this is a defense-in-depth check. The KSP processor performs equivalent checks at
-     * compile time for earlier, friendlier feedback.
+     * @throws IllegalArgumentException if the specification is malformed.
      */
     public fun validate() {
         val issues = collectIssues()
@@ -99,21 +85,14 @@ public class CommandSpec(
         }
     }
 
-    /**
-     * Renders the full, aligned `--help` text: an optional description, the usage line, an
-     * `Options:` section, and an `Arguments:` section. Output is deterministic. The `Options:`
-     * section lists options and flags in declaration order, followed by the synthetic `--help`
-     * and, when configured, `--version` entries; the `Arguments:` section lists positionals in
-     * declaration order.
-     */
+    /** Renders the full `--help` text: description, usage line, then aligned options and arguments. */
     public fun renderHelp(): String {
         val optionRows = buildList {
-            // Preserve the order in which options and flags were declared, even when interleaved.
             params.forEach { param ->
                 when (param) {
                     is OptionSpec -> add(optionInvocation(param) to optionHelp(param))
                     is FlagSpec -> add(flagInvocation(param) to flagHelp(param))
-                    is ArgumentSpec -> Unit // rendered in the Arguments section below
+                    is ArgumentSpec -> Unit
                 }
             }
             add("-h, --help" to "Show this help message and exit")

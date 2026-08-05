@@ -3,9 +3,8 @@ package org.draftcode.argot.annotations
 /**
  * Declares a boolean flag on a [Command] constructor parameter.
  *
- * The parameter must be a non-nullable `Boolean`. Presence of the flag implies `true`; absence
- * resolves to `false`. A Kotlin default of `= false` on the parameter is fine and consistent with
- * this flag semantics (it is implied by flag-ness, not read by the processor).
+ * The parameter must be a non-nullable `Boolean`: presence of the flag implies `true`, absence
+ * `false`. A Kotlin `= false` default is fine.
  *
  * @param names the flag's names, primary first (for example `["--verbose", "-v"]`).
  * @param help help text for `--help`.

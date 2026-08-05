@@ -1,14 +1,11 @@
 package org.draftcode.argot.annotations
 
 /**
- * Declares a positional argument on a [Command] constructor parameter.
+ * Declares a positional argument on a [Command] constructor parameter, named after the parameter.
  *
- * The parameter's Kotlin type determines the converter. A `List<T>` parameter becomes a trailing
- * positional that captures all remaining arguments; at most one such parameter is allowed and it
- * must be declared last. Optionality follows the same rule as [Option]: a non-nullable type is
- * required, a nullable type is optional and resolves to `null` when absent.
- *
- * The argument's name (used in help and usage) is taken from the parameter name.
+ * The parameter's type determines the converter. A `List<T>` becomes a trailing positional that
+ * captures the rest (at most one, declared last). As with [Option], a non-nullable type is required
+ * and a nullable type is optional.
  *
  * @param help help text for `--help`.
  */

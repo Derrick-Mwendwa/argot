@@ -1,32 +1,20 @@
 package org.draftcode.argot
 
 /**
- * The shared parsing engine. Both consumer styles build a [CommandSpec] and call [parse]; all
- * parsing, validation, and help rendering live here so behavior is identical across styles.
+ * Parses an argument list against a [CommandSpec].
  *
- * The engine is pure and side-effect free: it never prints and never exits. `--help`/`-h` and
- * `--version` are surfaced as [HelpRequested]/[VersionRequested] signals, and user-input problems
- * as [ArgotParseException]s. The [cli] wrapper adapts those outcomes to stdout/stderr and a process
- * exit code.
- *
- * Parsing semantics (v1):
- * - Long options: `--name value` and `--name=value`.
- * - Short options: `-n value`, `-n=value`, attached `-nVALUE`, and combined flag clusters `-abc`
- *   (each cluster character must be a known flag, except a trailing option that takes a value).
- * - `--` terminates option parsing; every following token is positional.
- * - A repeated single-valued option is a [ArgotParseException.DuplicateValue]; a `multiple` option
- *   accumulates instead.
- * - Positionals are consumed left to right; a single trailing `multiple` positional captures the rest.
+ * The engine never prints and never exits: `--help` and `--version` are reported as
+ * [HelpRequested] and [VersionRequested], and invalid input as an [ArgotParseException]. Wrap a
+ * call in [cli] for the usual behaviour of printing those and exiting.
  */
 public object ArgotEngine {
     /**
-     * Parses [argv] against [spec] and returns the resolved [ParsedValues].
+     * Parses [argv] against [spec].
      *
-     * @throws HelpRequested if `--help`/`-h` is present (carries fully rendered help text).
+     * @throws HelpRequested if `--help` or `-h` is present.
      * @throws VersionRequested if `--version` is present and [CommandSpec.version] is set.
-     * @throws ArgotParseException for any user-input error; the exception's
-     *   [ArgotParseException.usage] is populated before it escapes.
-     * @throws IllegalArgumentException if [spec] itself is malformed (a programming error).
+     * @throws ArgotParseException if the input is invalid.
+     * @throws IllegalArgumentException if [spec] itself is malformed.
      */
     public fun parse(spec: CommandSpec, argv: Array<String>): ParsedValues {
         spec.validate()
@@ -49,7 +37,6 @@ public object ArgotEngine {
         }
         val knownNames: Set<String> = optionByName.keys + flagByName.keys + negationByName.keys
 
-        // canonical name -> resolved value (single) or MutableList (multiple)
         val optionValues = HashMap<String, Any?>()
         val flagValues = HashMap<String, Boolean>()
         val positionalRaws = ArrayList<String>()
@@ -61,8 +48,6 @@ public object ArgotEngine {
             if (afterTerminator) {
                 positionalRaws.add(arg); i++; continue
             }
-            // `head` is the token without any `=value` suffix, so help/version are recognized
-            // even when written as `--help=x` or `--version=x`.
             val head = arg.substringBefore('=')
             i = when {
                 arg == "--" -> { afterTerminator = true; i + 1 }
@@ -148,7 +133,6 @@ public object ArgotEngine {
                             recordOption(opt, shortName, argv[i + 1], optionValues)
                             i + 2
                         }
-                        // `-n=value`: drop the '='. `-nVALUE`: take the rest verbatim.
                         rest.startsWith("=") -> { recordOption(opt, shortName, rest.substring(1), optionValues); i + 1 }
                         else -> { recordOption(opt, shortName, rest, optionValues); i + 1 }
                     }
@@ -159,7 +143,6 @@ public object ArgotEngine {
                 neg != null -> {
                     flagValues[neg.primaryName] = false; p++
                 }
-                // `--help`/`-h` is always available, including inside a flag cluster such as `-vh`.
                 shortName == "-h" -> throw HelpRequested(spec.renderHelp())
                 else -> throw ArgotParseException.UnknownOption(shortName)
             }

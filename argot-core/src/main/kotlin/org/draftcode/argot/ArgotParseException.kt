@@ -1,18 +1,11 @@
 package org.draftcode.argot
 
 /**
- * Base type for all user-input parsing failures (as opposed to malformed *specifications*, which
- * are programming errors reported via [IllegalArgumentException]).
- *
- * Every subtype carries a clear, user-facing [message]. After the failure bubbles out of the core
- * parse, the engine attaches a one-line [usage] string so a CLI front end can print both. The
- * [cli] wrapper does exactly this and exits with status `2`.
+ * Base type for all user-input parsing failures. The [cli] wrapper prints [usage] and the
+ * [message] to stderr and exits `2`.
  */
 public sealed class ArgotParseException(message: String) : Exception(message) {
-    /**
-     * The command's one-line usage string, attached by the engine before the exception escapes
-     * [ArgotEngine.parse]. `null` only if the exception was constructed directly in a test.
-     */
+    /** The command's one-line usage string, attached by the engine before the exception escapes. */
     public var usage: String? = null
         internal set
 
@@ -28,17 +21,11 @@ public sealed class ArgotParseException(message: String) : Exception(message) {
     public class MissingRequiredArgument(public val name: String) :
         ArgotParseException("missing required argument: <$name>")
 
-    /** An option that expects a value was supplied without one (for example at end of input). */
+    /** An option that expects a value was supplied without one. */
     public class MissingValue(public val name: String) :
         ArgotParseException("option $name requires a value")
 
-    /**
-     * A converter rejected a value.
-     *
-     * @param name the option or argument name.
-     * @param raw the offending raw input.
-     * @param expectedType the converter's [Converter.typeName].
-     */
+    /** A converter rejected a value. */
     public class InvalidValue(
         public val name: String,
         public val raw: String,

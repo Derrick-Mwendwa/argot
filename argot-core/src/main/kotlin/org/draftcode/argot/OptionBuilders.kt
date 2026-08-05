@@ -5,16 +5,12 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 /**
- * A fluent builder for a value-bearing [option][Arguments.option] in its initial, optional state.
- * Also a [PropertyDelegateProvider], so a property can delegate to it directly with `by`.
+ * Builds a value-bearing option. The call you end with decides the property's type:
+ * - end here and the property is nullable, resolving to `null` when the option is absent;
+ * - [required] and [default] give a non-null value;
+ * - [multiple] collects repeats into a `List<T>`.
  *
- * The terminal call determines the delegated type and so the property's nullability:
- * - **bare** (this builder): optional; resolves to `null` when absent, so it backs a nullable
- *   property (for example `val retries: Int? by option("--retries").int()`);
- * - [required] or [default]: resolves to a non-null value (see [RequiredOptionBuilder]);
- * - [multiple]: accumulates repeats into a `List<T>` (see [OptionListBuilder]).
- *
- * Refine the value type (`.int()`, `.enum<E>()`, `.convert(...)`) **before** choosing cardinality.
+ * Refine the value type (`.int()`, `.enum<E>()`, `.convert(...)`) before choosing cardinality.
  *
  * @param T the option's value type.
  */
@@ -24,34 +20,30 @@ public class OptionBuilder<T : Any> internal constructor(
     private val converter: Converter<T>,
 ) : PropertyDelegateProvider<Arguments, ReadOnlyProperty<Arguments, T?>> {
 
-    /** Refines the value type using a custom [converter]. */
     public fun <R : Any> convert(converter: Converter<R>): OptionBuilder<R> =
         OptionBuilder(names, help, converter)
 
-    /** Refines the value type to [Int]. */
     public fun int(): OptionBuilder<Int> = convert(IntConverter)
 
-    /** Refines the value type to [Long]. */
     public fun long(): OptionBuilder<Long> = convert(LongConverter)
 
-    /** Refines the value type to [Double]. */
     public fun double(): OptionBuilder<Double> = convert(DoubleConverter)
 
-    /** Refines the value type to [Boolean] (parsed from the option's string value). */
+    /** Parses the value as a [Boolean]: `true/false`, `1/0`, `yes/no`, `y/n`, or `on/off`. */
     public fun boolean(): OptionBuilder<Boolean> = convert(BooleanConverter)
 
-    /** Refines the value type to the enum [E], matching constant names case-insensitively. */
+    /** Parses the value as the enum [E], matching constant names case-insensitively. */
     public inline fun <reified E : Enum<E>> enum(): OptionBuilder<E> = convert(enumConverter<E>())
 
-    /** Makes the option required (non-null). */
+    /** Requires the option; parsing fails when it is absent. */
     public fun required(): RequiredOptionBuilder<T> =
         RequiredOptionBuilder(names, help, converter)
 
-    /** Provides a default [value] used when the option is absent (non-null). */
+    /** Uses [value] when the option is absent. */
     public fun default(value: T): RequiredOptionBuilder<T> =
         RequiredOptionBuilder(names, help, converter, hasDefault = true, default = value)
 
-    /** Makes the option repeatable; repeats accumulate into a `List<T>`. */
+    /** Allows the option to repeat, collecting every occurrence into a `List<T>`. */
     public fun multiple(): OptionListBuilder<T> = OptionListBuilder(names, help, converter)
 
     override operator fun provideDelegate(
@@ -67,8 +59,8 @@ public class OptionBuilder<T : Any> internal constructor(
 }
 
 /**
- * A fluent builder for a value-bearing [option][Arguments.option] that resolves to a non-null
- * value, reached via [OptionBuilder.required] or [OptionBuilder.default].
+ * An option that always resolves to a value, reached via [OptionBuilder.required] or
+ * [OptionBuilder.default].
  *
  * @param T the option's value type.
  */
@@ -90,7 +82,6 @@ public class RequiredOptionBuilder<T : Any> internal constructor(
                 names = names,
                 converter = converter,
                 help = help,
-                // A default makes the option optional; otherwise it is required.
                 required = !hasDefault,
                 default = default,
                 multiple = false,
@@ -101,8 +92,8 @@ public class RequiredOptionBuilder<T : Any> internal constructor(
 }
 
 /**
- * A fluent builder for a repeatable [option][Arguments.option] that accumulates into a `List<T>`.
- * Reached via [OptionBuilder.multiple]. Resolves to an empty list when the option never appears.
+ * A repeatable option, reached via [OptionBuilder.multiple]. Resolves to an empty list when the
+ * option never appears, unless [required] is set.
  *
  * @param T the element type.
  */
