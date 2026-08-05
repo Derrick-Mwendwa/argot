@@ -44,6 +44,10 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+### Local assistant/tooling scratch (never committed) ###
+.claude/
+CLAUDE.md
+
 ### Secrets / signing (never commit real publishing credentials) ###
 local.properties
 gradle.properties.local
