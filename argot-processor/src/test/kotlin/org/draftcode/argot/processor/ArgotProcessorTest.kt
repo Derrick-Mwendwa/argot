@@ -89,6 +89,33 @@ class ArgotProcessorTest {
     }
 
     @Test
+    fun acceptsAnExplicitParamUseSiteTarget() {
+        val source = SourceFile.kotlin(
+            "ParamTargeted.kt",
+            """
+            package com.example
+            import org.draftcode.argot.annotations.Command
+            import org.draftcode.argot.annotations.Option
+            import org.draftcode.argot.annotations.Flag
+            import org.draftcode.argot.annotations.Argument
+
+            @Command(name = "serve")
+            data class ParamTargeted(
+                @param:Option(names = ["--port", "-p"]) val port: Int,
+                @param:Flag(names = ["--verbose"]) val verbose: Boolean = false,
+                @param:Argument val files: List<String>,
+            )
+            """.trimIndent(),
+        )
+        val compilation = newCompilation(source)
+        val result = compilation.compile()
+        assertEquals(KotlinCompilation.ExitCode.OK, result.exitCode, result.messages)
+
+        val generated = compilation.workingDir.walkTopDown().firstOrNull { it.name == "parseParamTargeted.kt" }
+        assertTrue(generated != null && generated.exists(), "expected parseParamTargeted.kt to be generated")
+    }
+
+    @Test
     fun duplicateNamesFailCompilation() {
         val source = SourceFile.kotlin(
             "DupArgs.kt",

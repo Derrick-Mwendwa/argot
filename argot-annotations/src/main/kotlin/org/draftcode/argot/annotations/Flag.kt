@@ -9,7 +9,7 @@ package org.draftcode.argot.annotations
  * @param names the flag's names, primary first (for example `["--verbose", "-v"]`).
  * @param help help text for `--help`.
  */
-@Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
 public annotation class Flag(
     val names: Array<String> = [],

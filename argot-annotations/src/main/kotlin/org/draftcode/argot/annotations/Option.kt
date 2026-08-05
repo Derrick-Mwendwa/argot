@@ -13,7 +13,7 @@ package org.draftcode.argot.annotations
  * @param help help text for `--help`.
  * @param default the default value as a string; leave unset to mean "no default".
  */
-@Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
 public annotation class Option(
     val names: Array<String> = [],
