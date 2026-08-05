@@ -182,7 +182,10 @@ internal class ArgotSymbolProcessor(
                 ?: run { errors.report("@Option '$paramName': cannot resolve the List element type", param); return null }
             val converter = resolveConverter(element)
                 ?: run { errors.report(unsupportedType(paramName, element), param); return null }
-            return ResolvedParam(param, paramName, ParamKind.OPTION, names, help, converter, multiple = true, required = false, default = null)
+            return ResolvedParam(
+                param, paramName, ParamKind.OPTION, names, help, converter,
+                multiple = true, required = false, default = null,
+            )
         }
 
         val converter = resolveConverter(type)
@@ -196,7 +199,10 @@ internal class ArgotSymbolProcessor(
             return null
         }
         val required = !nullable && annoDefault == null
-        return ResolvedParam(param, paramName, ParamKind.OPTION, names, help, converter, multiple = false, required = required, default = annoDefault)
+        return ResolvedParam(
+            param, paramName, ParamKind.OPTION, names, help, converter,
+            multiple = false, required = required, default = annoDefault,
+        )
     }
 
     private fun resolveArgument(
@@ -214,7 +220,10 @@ internal class ArgotSymbolProcessor(
                 ?: run { errors.report("@Argument '$paramName': cannot resolve the List element type", param); return null }
             val converter = resolveConverter(element)
                 ?: run { errors.report(unsupportedType(paramName, element), param); return null }
-            return ResolvedParam(param, paramName, ParamKind.ARGUMENT, names = emptyList(), help, converter, multiple = true, required = false, default = null)
+            return ResolvedParam(
+                param, paramName, ParamKind.ARGUMENT, names = emptyList(), help = help, converter = converter,
+                multiple = true, required = false, default = null,
+            )
         }
 
         val converter = resolveConverter(type)
@@ -227,7 +236,10 @@ internal class ArgotSymbolProcessor(
             )
             return null
         }
-        return ResolvedParam(param, paramName, ParamKind.ARGUMENT, names = emptyList(), help, converter, multiple = false, required = !nullable, default = null)
+        return ResolvedParam(
+            param, paramName, ParamKind.ARGUMENT, names = emptyList(), help = help, converter = converter,
+            multiple = false, required = !nullable, default = null,
+        )
     }
 
     private fun validateCommand(cls: KSClassDeclaration, resolved: List<ResolvedParam>, errors: ErrorSink) {
