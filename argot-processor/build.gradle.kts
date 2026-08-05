@@ -12,6 +12,11 @@ mavenPublishing {
 
 kotlin {
     jvmToolchain(17)
+
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation {
+        enabled.set(true)
+    }
     // explicitApi() intentionally off: the only public symbol is the SymbolProcessorProvider.
 }
 

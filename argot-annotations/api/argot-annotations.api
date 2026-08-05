@@ -1,0 +1,24 @@
+public abstract interface annotation class org/draftcode/argot/annotations/Argument : java/lang/annotation/Annotation {
+	public abstract fun help ()Ljava/lang/String;
+}
+
+public abstract interface annotation class org/draftcode/argot/annotations/Command : java/lang/annotation/Annotation {
+	public abstract fun description ()Ljava/lang/String;
+	public abstract fun name ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/annotations/DefaultsKt {
+	public static final field NO_DEFAULT Ljava/lang/String;
+}
+
+public abstract interface annotation class org/draftcode/argot/annotations/Flag : java/lang/annotation/Annotation {
+	public abstract fun help ()Ljava/lang/String;
+	public abstract fun names ()[Ljava/lang/String;
+}
+
+public abstract interface annotation class org/draftcode/argot/annotations/Option : java/lang/annotation/Annotation {
+	public abstract fun default ()Ljava/lang/String;
+	public abstract fun help ()Ljava/lang/String;
+	public abstract fun names ()[Ljava/lang/String;
+}
+

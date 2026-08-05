@@ -1,0 +1,243 @@
+public final class org/draftcode/argot/ArgotConversionException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class org/draftcode/argot/ArgotEngine {
+	public static final field INSTANCE Lorg/draftcode/argot/ArgotEngine;
+	public final fun parse (Lorg/draftcode/argot/CommandSpec;[Ljava/lang/String;)Lorg/draftcode/argot/ParsedValues;
+}
+
+public abstract class org/draftcode/argot/ArgotParseException : java/lang/Exception {
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getUsage ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/ArgotParseException$DuplicateValue : org/draftcode/argot/ArgotParseException {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/ArgotParseException$InvalidValue : org/draftcode/argot/ArgotParseException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun getExpectedType ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRaw ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/ArgotParseException$MissingRequiredArgument : org/draftcode/argot/ArgotParseException {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/ArgotParseException$MissingRequiredOption : org/draftcode/argot/ArgotParseException {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/ArgotParseException$MissingValue : org/draftcode/argot/ArgotParseException {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/ArgotParseException$TooManyArguments : org/draftcode/argot/ArgotParseException {
+	public fun <init> (Ljava/util/List;)V
+	public final fun getExtra ()Ljava/util/List;
+}
+
+public final class org/draftcode/argot/ArgotParseException$UnknownOption : org/draftcode/argot/ArgotParseException {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/ArgumentBuilder : kotlin/properties/PropertyDelegateProvider {
+	public final fun convert (Lorg/draftcode/argot/Converter;)Lorg/draftcode/argot/ArgumentBuilder;
+	public final fun double ()Lorg/draftcode/argot/ArgumentBuilder;
+	public final fun int ()Lorg/draftcode/argot/ArgumentBuilder;
+	public final fun long ()Lorg/draftcode/argot/ArgumentBuilder;
+	public final fun multiple ()Lorg/draftcode/argot/ArgumentListBuilder;
+	public final fun optional ()Lorg/draftcode/argot/OptionalArgumentBuilder;
+	public synthetic fun provideDelegate (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun provideDelegate (Lorg/draftcode/argot/Arguments;Lkotlin/reflect/KProperty;)Lkotlin/properties/ReadOnlyProperty;
+}
+
+public final class org/draftcode/argot/ArgumentListBuilder : kotlin/properties/PropertyDelegateProvider {
+	public synthetic fun provideDelegate (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun provideDelegate (Lorg/draftcode/argot/Arguments;Lkotlin/reflect/KProperty;)Lkotlin/properties/ReadOnlyProperty;
+	public final fun required ()Lorg/draftcode/argot/ArgumentListBuilder;
+}
+
+public final class org/draftcode/argot/ArgumentSpec : org/draftcode/argot/ParamSpec {
+	public fun <init> (Ljava/lang/String;Lorg/draftcode/argot/Converter;Ljava/lang/String;ZZ)V
+	public synthetic fun <init> (Ljava/lang/String;Lorg/draftcode/argot/Converter;Ljava/lang/String;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getConverter ()Lorg/draftcode/argot/Converter;
+	public fun getHelp ()Ljava/lang/String;
+	public final fun getMultiple ()Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRequired ()Z
+}
+
+public abstract class org/draftcode/argot/Arguments {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected final fun argument (Ljava/lang/String;)Lorg/draftcode/argot/ArgumentBuilder;
+	public static synthetic fun argument$default (Lorg/draftcode/argot/Arguments;Ljava/lang/String;ILjava/lang/Object;)Lorg/draftcode/argot/ArgumentBuilder;
+	protected final fun flag ([Ljava/lang/String;Ljava/lang/String;)Lorg/draftcode/argot/FlagBuilder;
+	public static synthetic fun flag$default (Lorg/draftcode/argot/Arguments;[Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/draftcode/argot/FlagBuilder;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getProgramName ()Ljava/lang/String;
+	public final fun getVersion ()Ljava/lang/String;
+	protected final fun option ([Ljava/lang/String;Ljava/lang/String;)Lorg/draftcode/argot/OptionBuilder;
+	public static synthetic fun option$default (Lorg/draftcode/argot/Arguments;[Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/draftcode/argot/OptionBuilder;
+}
+
+public final class org/draftcode/argot/ArgumentsKt {
+	public static final fun parse (Lorg/draftcode/argot/Arguments;[Ljava/lang/String;)Lorg/draftcode/argot/Arguments;
+	public static final fun parsed (Lorg/draftcode/argot/Arguments;[Ljava/lang/String;)Lorg/draftcode/argot/Arguments;
+}
+
+public final class org/draftcode/argot/BooleanConverter : org/draftcode/argot/Converter {
+	public static final field INSTANCE Lorg/draftcode/argot/BooleanConverter;
+	public fun convert (Ljava/lang/String;)Ljava/lang/Boolean;
+	public synthetic fun convert (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getTypeName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/CliKt {
+	public static final fun cli (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class org/draftcode/argot/CommandSpec {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getParams ()Ljava/util/List;
+	public final fun getProgramName ()Ljava/lang/String;
+	public final fun getVersion ()Ljava/lang/String;
+	public final fun renderHelp ()Ljava/lang/String;
+	public final fun renderUsage ()Ljava/lang/String;
+	public final fun validate ()V
+}
+
+public abstract interface class org/draftcode/argot/Converter {
+	public abstract fun convert (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getTypeName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/Converter$DefaultImpls {
+	public static fun getTypeName (Lorg/draftcode/argot/Converter;)Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/DoubleConverter : org/draftcode/argot/Converter {
+	public static final field INSTANCE Lorg/draftcode/argot/DoubleConverter;
+	public fun convert (Ljava/lang/String;)Ljava/lang/Double;
+	public synthetic fun convert (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getTypeName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/EnumConverter : org/draftcode/argot/Converter {
+	public fun <init> (Ljava/util/List;Ljava/lang/String;)V
+	public fun convert (Ljava/lang/String;)Ljava/lang/Enum;
+	public synthetic fun convert (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getTypeName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/FlagBuilder : kotlin/properties/PropertyDelegateProvider {
+	public final fun default (Z)Lorg/draftcode/argot/FlagBuilder;
+	public final fun negatedBy ([Ljava/lang/String;)Lorg/draftcode/argot/FlagBuilder;
+	public synthetic fun provideDelegate (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun provideDelegate (Lorg/draftcode/argot/Arguments;Lkotlin/reflect/KProperty;)Lkotlin/properties/ReadOnlyProperty;
+}
+
+public final class org/draftcode/argot/FlagSpec : org/draftcode/argot/ParamSpec {
+	public fun <init> (Ljava/util/List;Ljava/lang/String;Ljava/util/List;Z)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/lang/String;Ljava/util/List;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDefault ()Z
+	public fun getHelp ()Ljava/lang/String;
+	public final fun getNames ()Ljava/util/List;
+	public final fun getNegationNames ()Ljava/util/List;
+	public final fun getPrimaryName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/HelpRequested : java/lang/RuntimeException {
+	public final fun getRendered ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/IntConverter : org/draftcode/argot/Converter {
+	public static final field INSTANCE Lorg/draftcode/argot/IntConverter;
+	public fun convert (Ljava/lang/String;)Ljava/lang/Integer;
+	public synthetic fun convert (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getTypeName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/LongConverter : org/draftcode/argot/Converter {
+	public static final field INSTANCE Lorg/draftcode/argot/LongConverter;
+	public fun convert (Ljava/lang/String;)Ljava/lang/Long;
+	public synthetic fun convert (Ljava/lang/String;)Ljava/lang/Object;
+	public fun getTypeName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/OptionBuilder : kotlin/properties/PropertyDelegateProvider {
+	public final fun boolean ()Lorg/draftcode/argot/OptionBuilder;
+	public final fun convert (Lorg/draftcode/argot/Converter;)Lorg/draftcode/argot/OptionBuilder;
+	public final fun default (Ljava/lang/Object;)Lorg/draftcode/argot/RequiredOptionBuilder;
+	public final fun double ()Lorg/draftcode/argot/OptionBuilder;
+	public final fun int ()Lorg/draftcode/argot/OptionBuilder;
+	public final fun long ()Lorg/draftcode/argot/OptionBuilder;
+	public final fun multiple ()Lorg/draftcode/argot/OptionListBuilder;
+	public synthetic fun provideDelegate (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun provideDelegate (Lorg/draftcode/argot/Arguments;Lkotlin/reflect/KProperty;)Lkotlin/properties/ReadOnlyProperty;
+	public final fun required ()Lorg/draftcode/argot/RequiredOptionBuilder;
+}
+
+public final class org/draftcode/argot/OptionListBuilder : kotlin/properties/PropertyDelegateProvider {
+	public synthetic fun provideDelegate (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun provideDelegate (Lorg/draftcode/argot/Arguments;Lkotlin/reflect/KProperty;)Lkotlin/properties/ReadOnlyProperty;
+	public final fun required ()Lorg/draftcode/argot/OptionListBuilder;
+}
+
+public final class org/draftcode/argot/OptionSpec : org/draftcode/argot/ParamSpec {
+	public fun <init> (Ljava/util/List;Lorg/draftcode/argot/Converter;Ljava/lang/String;ZLjava/lang/Object;Z)V
+	public synthetic fun <init> (Ljava/util/List;Lorg/draftcode/argot/Converter;Ljava/lang/String;ZLjava/lang/Object;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getConverter ()Lorg/draftcode/argot/Converter;
+	public final fun getDefault ()Ljava/lang/Object;
+	public fun getHelp ()Ljava/lang/String;
+	public final fun getMultiple ()Z
+	public final fun getNames ()Ljava/util/List;
+	public final fun getPrimaryName ()Ljava/lang/String;
+	public final fun getRequired ()Z
+}
+
+public final class org/draftcode/argot/OptionalArgumentBuilder : kotlin/properties/PropertyDelegateProvider {
+	public synthetic fun provideDelegate (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun provideDelegate (Lorg/draftcode/argot/Arguments;Lkotlin/reflect/KProperty;)Lkotlin/properties/ReadOnlyProperty;
+}
+
+public abstract class org/draftcode/argot/ParamSpec {
+	public abstract fun getHelp ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/ParsedValues {
+	public final fun flag (Ljava/lang/String;)Z
+	public final fun list (Ljava/lang/String;)Ljava/util/List;
+	public final fun value (Ljava/lang/String;)Ljava/lang/Object;
+	public final fun valueOrNull (Ljava/lang/String;)Ljava/lang/Object;
+}
+
+public final class org/draftcode/argot/RequiredOptionBuilder : kotlin/properties/PropertyDelegateProvider {
+	public synthetic fun provideDelegate (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun provideDelegate (Lorg/draftcode/argot/Arguments;Lkotlin/reflect/KProperty;)Lkotlin/properties/ReadOnlyProperty;
+}
+
+public final class org/draftcode/argot/StringConverter : org/draftcode/argot/Converter {
+	public static final field INSTANCE Lorg/draftcode/argot/StringConverter;
+	public synthetic fun convert (Ljava/lang/String;)Ljava/lang/Object;
+	public fun convert (Ljava/lang/String;)Ljava/lang/String;
+	public fun getTypeName ()Ljava/lang/String;
+}
+
+public final class org/draftcode/argot/VersionRequested : java/lang/RuntimeException {
+	public final fun getRendered ()Ljava/lang/String;
+}
+
