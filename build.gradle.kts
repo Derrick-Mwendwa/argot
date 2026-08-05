@@ -18,7 +18,7 @@ tasks.register("printVersion") {
 }
 
 // Shared POM for any module applying the vanniktech plugin; each module sets its own name and
-// description. Credentials come from Gradle properties or env vars (see gradle.properties.template).
+// description. Credentials come from Gradle properties or env vars (see RELEASING.md).
 subprojects {
     plugins.withId("com.vanniktech.maven.publish") {
         extensions.configure<MavenPublishBaseExtension> {
