@@ -53,6 +53,21 @@ put it in the pull request description where it stays readable.
   the signature already says everything.
 - Internal code carries a comment only when the comment says something the code cannot.
 
+## Public API changes
+
+`./gradlew build` runs `checkKotlinAbi`, which compares each published module against the ABI dump
+committed in its `api/` directory. If you change the public API on purpose, regenerate and commit the
+dump in the same pull request:
+
+```sh
+./gradlew updateKotlinAbi
+```
+
+If you did not mean to change it, the failure is telling you something: an accidentally `public`
+declaration, or a signature change that would break code compiled against the previous release. The
+Versioning section of [RELEASING.md](RELEASING.md) explains why that matters even for declarations
+nobody types by hand.
+
 ## Tests
 
 Every behavioural change needs a test. The suites are:
