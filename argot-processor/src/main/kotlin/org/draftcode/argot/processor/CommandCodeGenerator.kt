@@ -106,33 +106,49 @@ internal class CommandCodeGenerator(
             .writeTo(codeGenerator, aggregating = false, originatingKSFiles = listOfNotNull(cls.containingFile))
     }
 
-    private fun specFor(param: ResolvedParam): CodeBlock = when (param.kind) {
-        ParamKind.OPTION -> CodeBlock.builder().apply {
-            add("%T(names = %L, converter = %L", OPTION_SPEC, namesList(param.names), param.converter)
-            if (param.help.isNotEmpty()) add(", help = %S", param.help)
-            when {
-                param.multiple -> add(", multiple = true, required = false")
-                param.required -> add(", required = true")
-                param.default != null -> add(", default = %L.convert(%S)", param.converter, param.default)
-            }
-            add(")")
-        }.build()
+    private fun specFor(param: ResolvedParam): CodeBlock {
+        val specType = when (param.kind) {
+            ParamKind.OPTION -> OPTION_SPEC
+            ParamKind.FLAG -> FLAG_SPEC
+            ParamKind.ARGUMENT -> ARGUMENT_SPEC
+        }
 
-        ParamKind.FLAG -> CodeBlock.builder().apply {
-            add("%T(names = %L", FLAG_SPEC, namesList(param.names))
-            if (param.help.isNotEmpty()) add(", help = %S", param.help)
-            add(")")
-        }.build()
-
-        ParamKind.ARGUMENT -> CodeBlock.builder().apply {
-            add("%T(name = %S, converter = %L", ARGUMENT_SPEC, param.paramName, param.converter)
-            if (param.help.isNotEmpty()) add(", help = %S", param.help)
-            when {
-                param.multiple -> add(", multiple = true, required = false")
-                !param.required -> add(", required = false")
+        val arguments = buildList {
+            if (param.kind == ParamKind.ARGUMENT) {
+                add(CodeBlock.of("name = %S", param.paramName))
+            } else {
+                add(CodeBlock.of("names = %L", namesList(param.names)))
             }
-            add(")")
-        }.build()
+            if (param.kind != ParamKind.FLAG) {
+                add(CodeBlock.of("converter = %L", param.converter))
+            }
+            if (param.help.isNotEmpty()) add(CodeBlock.of("help = %S", param.help))
+            when (param.kind) {
+                ParamKind.OPTION -> when {
+                    param.multiple -> {
+                        add(CodeBlock.of("multiple = true"))
+                        add(CodeBlock.of("required = false"))
+                    }
+                    param.required -> add(CodeBlock.of("required = true"))
+                    param.default != null ->
+                        add(CodeBlock.of("default = %L.convert(%S)", param.converter, param.default))
+                }
+                ParamKind.ARGUMENT -> when {
+                    param.multiple -> {
+                        add(CodeBlock.of("multiple = true"))
+                        add(CodeBlock.of("required = false"))
+                    }
+                    !param.required -> add(CodeBlock.of("required = false"))
+                }
+                ParamKind.FLAG -> Unit
+            }
+        }
+
+        return CodeBlock.builder()
+            .add("%T(\n", specType).indent()
+            .apply { arguments.forEach { add("%L,\n", it) } }
+            .unindent().add(")")
+            .build()
     }
 
     private fun extractionFor(param: ResolvedParam): CodeBlock {
