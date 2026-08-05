@@ -28,14 +28,24 @@ publish if the tag and that version disagree.
    git push origin v0.1.1
    ```
 
-That push is the release trigger. The `release` workflow then:
+   That push is the release trigger. The `release` workflow then:
 
-- verifies `v0.1.1` matches the project version, failing loudly if not;
-- builds and tests every module;
-- publishes signed artifacts to Maven Central;
-- creates the GitHub Release with generated notes.
+   - verifies `v0.1.1` matches the project version, failing loudly if not;
+   - builds and tests every module;
+   - uploads signed artifacts to the Central Portal;
+   - creates the GitHub Release with generated notes.
 
-Artifacts usually appear on Maven Central within 15–30 minutes.
+6. **Approve the deployment.** Nothing is public until you do. Open
+   [Deployments on the Central Portal](https://central.sonatype.com/publishing/deployments), check the
+   validated deployment, and click **Publish**.
+
+Artifacts usually appear on Maven Central within 15–30 minutes of that approval.
+
+The GitHub Release is created as soon as the upload succeeds, which is *before* you approve. If you
+drop a deployment rather than publishing it, delete the matching Release and tag as well.
+
+To remove the approval step entirely, set `mavenCentralAutomaticPublishing=true` — then a tag push
+goes straight through to a live, permanent artifact with nothing to catch a mistake.
 
 ## Repository secrets
 
@@ -52,17 +62,17 @@ None of these are needed to build the project or to work on it locally.
 
 ## When a release goes wrong
 
-**Maven Central is immutable.** A published version can never be replaced or withdrawn. If a release
-is broken, fix forward with the next patch version — never try to re-publish the same one.
-
-If the workflow fails *before* the publish step, delete the tag and try again:
+**Before you approve on the Central Portal, nothing is public.** Drop the deployment there and the
+version number stays free. Clean up and start over:
 
 ```sh
 git tag -d v0.1.1
 git push origin :refs/tags/v0.1.1
+gh release delete v0.1.1 --yes
 ```
 
-If it fails *after* publishing, the artifacts are out. Cut `0.1.2`.
+**After you approve, Maven Central is immutable.** That version can never be replaced or withdrawn.
+A broken release is fixed forward with the next patch version — never by re-publishing the same one.
 
 ## Patching an older release line
 
