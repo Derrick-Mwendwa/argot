@@ -8,10 +8,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-/**
- * Integration tests for the annotation-style `serve` command (§7). These call the **generated**
- * `parseServeArgs`, proving the KSP processor produced a correct parser end-to-end.
- */
+/** Calls the generated `parseServeArgs`, exercising the KSP processor end to end. */
 class ServeCommandTest {
 
     @Test

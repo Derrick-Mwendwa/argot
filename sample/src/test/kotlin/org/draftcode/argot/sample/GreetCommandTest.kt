@@ -7,7 +7,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-/** Integration tests for the delegate-style `greet` command entry point (§7). */
 class GreetCommandTest {
 
     @Test
