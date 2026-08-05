@@ -55,10 +55,29 @@ The release workflow needs four secrets. See `gradle.properties.template` for wh
 |---|---|
 | `MAVEN_CENTRAL_USERNAME` | user token at [central.sonatype.com/account](https://central.sonatype.com/account) |
 | `MAVEN_CENTRAL_PASSWORD` | the matching token password |
-| `SIGNING_IN_MEMORY_KEY` | `gpg --armor --export-secret-keys <KEY_ID>`, newlines replaced with `\n` |
+| `SIGNING_IN_MEMORY_KEY` | `gpg --armor --export-secret-keys <KEY_ID>` — stored with **real newlines** |
 | `SIGNING_IN_MEMORY_KEY_PASSWORD` | the GPG key passphrase |
 
 None of these are needed to build the project or to work on it locally.
+
+**The signing key's line endings matter, and differ by channel.** In `~/.gradle/gradle.properties`
+the key must be one line with `\n` escapes, because Java's properties loader converts those back to
+real newlines. As a GitHub Secret it must keep its real newlines, because CI passes it through
+`ORG_GRADLE_PROJECT_signingInMemoryKey` and nothing unescapes an environment variable. Getting this
+backwards fails at the signing step, *after* a green build, with:
+
+```
+java.io.IOException: secret key ring doesn't start with secret key tag: tag 0xffffffff
+```
+
+To copy the key straight from your local properties file into the secret, converting as it goes:
+
+```sh
+grep -m1 '^signingInMemoryKey=' ~/.gradle/gradle.properties \
+  | sed 's/^signingInMemoryKey=//' \
+  | perl -pe 's/\\n/\n/g' \
+  | gh secret set SIGNING_IN_MEMORY_KEY
+```
 
 ## When a release goes wrong
 

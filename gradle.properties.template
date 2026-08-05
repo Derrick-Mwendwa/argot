@@ -13,7 +13,16 @@ mavenCentralPassword=YOUR_CENTRAL_PORTAL_TOKEN_PASSWORD
 
 # --- GPG signing (in-memory key) ---
 # Export the ASCII-armored private key with:  gpg --armor --export-secret-keys <KEY_ID>
-# Replace real newlines with \n so the whole key is a single property line.
+#
+# The key is line-wrapped, and how you escape it depends on which channel it arrives through:
+#
+#   In THIS FILE, replace real newlines with \n so the key is a single property line. Java's
+#   properties loader turns those back into real newlines when Gradle reads the file.
+#
+#   As an ENVIRONMENT VARIABLE (ORG_GRADLE_PROJECT_signingInMemoryKey, which is how CI injects it
+#   from a GitHub Secret), keep the REAL newlines. Nothing unescapes an env var, so a key full of
+#   literal \n reaches the signer as one long line and fails with
+#   "secret key ring doesn't start with secret key tag".
 signingInMemoryKey=-----BEGIN PGP PRIVATE KEY BLOCK-----\n...\n-----END PGP PRIVATE KEY BLOCK-----
 signingInMemoryKeyPassword=YOUR_GPG_KEY_PASSPHRASE
 # Optional: only needed when your keyring holds more than one secret key.
