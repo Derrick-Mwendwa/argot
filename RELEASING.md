@@ -1,10 +1,37 @@
 # Releasing Argot
 
-Argot follows [Semantic Versioning](https://semver.org). While the version is `0.x`, a minor bump
-may change the API; patch bumps never do.
-
 Releases are driven entirely by git tags. The version lives in `build.gradle.kts`, and CI refuses to
 publish if the tag and that version disagree.
+
+## Versioning
+
+Argot follows [Semantic Versioning](https://semver.org). Deciding which number to bump means asking
+what changed, and Argot has **three** things a release can break:
+
+1. **The source API** — everything `public` in `argot-core` and `argot-annotations`. What users type.
+2. **The generated-code contract** — the core declarations that generated parsers call: `CommandSpec`,
+   the three `ParamSpec` constructors, `ArgotEngine.parse`, and `ParsedValues.value`/`valueOrNull`/
+   `flag`/`list`. This one is easy to break by accident, because nobody writes it by hand — but a
+   user can have `argot-processor` 0.1.1 and `argot-core` 0.2.0 in the same build, and code emitted
+   by the older processor still has to compile against the newer core.
+3. **Observable CLI behaviour** — parsing semantics and the layout of `--help`. Someone's test
+   asserts on that output.
+
+Surfaces 1 and 2 are enforced by the build: `./gradlew build` runs `checkKotlinAbi`, which fails if
+the public ABI drifts from the committed dumps in each module's `api/` directory. When a change to
+them is deliberate, run `./gradlew updateKotlinAbi` and commit the updated dump alongside it.
+
+**While Argot is `0.x`:**
+
+| Bump | Contains |
+|---|---|
+| patch (`0.1.2`) | No change to any of the three surfaces. Docs, build, CI, internal refactors, generated-code *formatting*, and fixes to behaviour that was plainly wrong. |
+| minor (`0.2.0`) | New features and additive API. Breaking changes are allowed, but each one needs a changelog entry with before/after. |
+| `1.0.0` | The point at which breaking changes start costing a major bump. |
+
+**After 1.0.0:** patch is fixes only, minor is additive only, and anything that removes or renames a
+declaration, changes a signature, alters the generated-code contract, or changes parsing or `--help`
+in a way that could break working code requires a major bump.
 
 ## Cutting a release
 
@@ -49,7 +76,10 @@ goes straight through to a live, permanent artifact with nothing to catch a mist
 
 ## Repository secrets
 
-The release workflow needs four secrets. See `gradle.properties.template` for what each one is.
+The release workflow needs four secrets, injected as `ORG_GRADLE_PROJECT_*` environment variables.
+To publish from your own machine instead, put the same values in `~/.gradle/gradle.properties` under
+their Gradle property names (`mavenCentralUsername`, `mavenCentralPassword`, `signingInMemoryKey`,
+`signingInMemoryKeyPassword`).
 
 | Secret | Where it comes from |
 |---|---|
