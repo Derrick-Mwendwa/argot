@@ -1,30 +1,22 @@
-# Release workflow STUB.
-#
-# This is intentionally manual-only (workflow_dispatch) and is NOT wired to fire automatically on
-# tags or pushes. It reads publishing credentials from GitHub Secrets and is provided as a starting
-# point — review it before enabling a real release. It defaults to a dry run (build only).
-#
-# Required repository secrets (see gradle.properties.template for what each is):
-#   MAVEN_CENTRAL_USERNAME, MAVEN_CENTRAL_PASSWORD,
-#   SIGNING_IN_MEMORY_KEY, SIGNING_IN_MEMORY_KEY_PASSWORD
+# Pushing a v* tag publishes that commit to Maven Central and opens a GitHub Release.
+# See RELEASING.md for the procedure and the repository secrets this needs.
 name: release
 
 on:
-  workflow_dispatch:
-    inputs:
-      dryRun:
-        description: "Dry run (build only, do not publish)"
-        type: boolean
-        default: true
+  push:
+    tags: [ 'v*' ]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -35,15 +27,28 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Dry run (build only)
-        if: ${{ inputs.dryRun }}
+      - name: Verify the tag matches the project version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          project="$(./gradlew -q --console=plain printVersion | tail -1 | tr -d '[:space:]')"
+          echo "tag=$tag project=$project"
+          if [ "$tag" != "$project" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match the project version $project"
+            exit 1
+          fi
+
+      - name: Build and test
         run: ./gradlew build --stacktrace
 
       - name: Publish to Maven Central
-        if: ${{ !inputs.dryRun }}
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_IN_MEMORY_KEY_PASSWORD }}
         run: ./gradlew publishToMavenCentral --no-configuration-cache --stacktrace
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes
