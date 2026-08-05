@@ -6,6 +6,23 @@ All notable changes to Argot are recorded here. The format follows
 
 ## Unreleased
 
+No API or behaviour changes.
+
+### Changed
+
+- Generated parsers place each specification argument on its own line, keeping generated code inside
+  100 columns instead of running to roughly 130.
+
+### Internal
+
+- The public ABI of every published module is recorded under `api/` and checked by `./gradlew build`,
+  so an unintended API change now fails CI instead of reaching a release. See the Versioning section
+  of `RELEASING.md` for why this matters to code nobody types by hand.
+- Weekly Dependabot updates for GitHub Actions and Gradle dependencies.
+- Added issue and pull request templates, a security policy, and `.editorconfig`.
+- Removed `gradle.properties.template`; `RELEASING.md` is now the single description of the
+  publishing credentials.
+
 ## 0.1.1 — 2026-08-05
 
 ### Fixed
