@@ -5,7 +5,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-/** Verifies deterministic, aligned usage and `--help` rendering (§4.6). */
 class RenderTest {
 
     private fun fullSpec() = CommandSpec(

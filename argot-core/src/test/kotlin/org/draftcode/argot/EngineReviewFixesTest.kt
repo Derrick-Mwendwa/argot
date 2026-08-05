@@ -6,9 +6,8 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
- * Regression tests for issues surfaced by the adversarial engine review: short-name flag negation,
- * `--help`/`--version` written with an attached `=value`, and declaration-order help rendering of
- * interleaved options and flags.
+ * Regression tests: short-name flag negation, `--help`/`--version` written with an attached
+ * `=value`, and declaration-order help rendering of interleaved options and flags.
  */
 class EngineReviewFixesTest {
 

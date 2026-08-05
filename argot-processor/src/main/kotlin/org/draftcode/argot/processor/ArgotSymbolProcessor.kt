@@ -22,10 +22,8 @@ private const val FLAG_FQN = "org.draftcode.argot.annotations.Flag"
 private const val ARGUMENT_FQN = "org.draftcode.argot.annotations.Argument"
 private val ARGOT_PARAM_ANNOTATIONS = setOf(OPTION_FQN, FLAG_FQN, ARGUMENT_FQN)
 
-/** The three kinds of declared parameter. */
 internal enum class ParamKind { OPTION, FLAG, ARGUMENT }
 
-/** A fully resolved command parameter, ready for code generation. */
 internal class ResolvedParam(
     val node: KSValueParameter,
     val paramName: String,
@@ -37,15 +35,9 @@ internal class ResolvedParam(
     val required: Boolean,
     val default: String?,
 ) {
-    /** The key used to look the value up in `ParsedValues`. */
     val lookupKey: String get() = if (kind == ParamKind.ARGUMENT) paramName else names.first()
 }
 
-/**
- * The Argot KSP processor. For each `@Command` class it reads the primary constructor, maps each
- * parameter to a [ResolvedParam], validates the command shape (reporting clear compile errors), and
- * generates a sibling `parse<ClassName>(argv): ClassName` function.
- */
 internal class ArgotSymbolProcessor(
     codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
@@ -57,9 +49,7 @@ internal class ArgotSymbolProcessor(
         val deferred = symbols.filterNot { it.validate() }
         val commands = symbols.filterIsInstance<KSClassDeclaration>().filter { it.validate() }
 
-        // Detect parse-function name collisions up front so they fail as a clear compile error
-        // rather than an opaque FileAlreadyExistsException from the code generator. Collisions are
-        // only possible for same-simple-name classes in the same package (e.g. two nested classes).
+        // Report collisions here; otherwise the code generator fails with FileAlreadyExistsException.
         val byTarget = commands.groupBy { "${it.packageName.asString()}/parse${it.simpleName.asString()}" }
         commands.forEach { cls ->
             val key = "${cls.packageName.asString()}/parse${cls.simpleName.asString()}"
@@ -80,7 +70,6 @@ internal class ArgotSymbolProcessor(
         val errors = ErrorSink(logger)
         val name = cls.simpleName.asString()
 
-        // @Command must target a concrete, instantiable class with a primary constructor.
         if (cls.classKind != ClassKind.CLASS ||
             Modifier.ABSTRACT in cls.modifiers ||
             Modifier.SEALED in cls.modifiers ||
@@ -242,7 +231,6 @@ internal class ArgotSymbolProcessor(
     }
 
     private fun validateCommand(cls: KSClassDeclaration, resolved: List<ResolvedParam>, errors: ErrorSink) {
-        // Duplicate option/flag names across the whole command.
         val seen = mutableSetOf<String>()
         resolved.filter { it.kind != ParamKind.ARGUMENT }.forEach { param ->
             param.names.forEach { name ->
@@ -250,7 +238,6 @@ internal class ArgotSymbolProcessor(
             }
         }
 
-        // Positional ordering and at-most-one trailing list.
         val positionals = resolved.filter { it.kind == ParamKind.ARGUMENT }
         if (positionals.count { it.multiple } > 1) {
             errors.report("at most one List (trailing) positional is allowed", cls)
@@ -293,7 +280,6 @@ internal class ArgotSymbolProcessor(
             "Supported: String, Int, Long, Double, Boolean, an enum, or a List of those."
 }
 
-/** Accumulates compile errors so a command reports all of its problems in one pass. */
 private class ErrorSink(private val logger: KSPLogger) {
     var any: Boolean = false
         private set

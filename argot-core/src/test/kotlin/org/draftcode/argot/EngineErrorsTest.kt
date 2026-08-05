@@ -6,7 +6,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-/** Exercises the user-input error surface of [ArgotEngine] (§4.4). */
 class EngineErrorsTest {
 
     private fun spec() = CommandSpec(

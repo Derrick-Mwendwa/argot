@@ -7,14 +7,8 @@ import kotlin.test.assertTrue
 
 private enum class Color { RED, GREEN, BLUE }
 
-/**
- * Exercises the core parsing semantics of [ArgotEngine] (§4.5): the various option forms, flags,
- * positionals, defaults, and the full error surface.
- */
 class EngineParsingTest {
 
-    /** A representative command: a defaulted option, a required option, a `multiple` option,
-     * an enum option, a flag, a required positional, and a trailing `multiple` positional. */
     private fun fullSpec() = CommandSpec(
         programName = "demo",
         description = "A demo command",

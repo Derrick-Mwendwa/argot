@@ -4,7 +4,6 @@ import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-/** Verifies that [CommandSpec.validate] rejects malformed specifications (§4.5). */
 class SpecValidationTest {
 
     @Test

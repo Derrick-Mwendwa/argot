@@ -15,9 +15,8 @@ mavenPublishing {
     }
 }
 
-// argot-core is the pure-Kotlin parsing engine + delegate API.
-// Constraint: zero third-party runtime dependencies — stdlib only.
 dependencies {
+    // No third-party runtime dependencies — stdlib only.
     testImplementation(platform(libs.junit.bom))
     testImplementation(kotlin("test"))
 }
