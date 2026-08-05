@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest something Argot should be able to do
+labels: [enhancement]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Some things are already planned and tracked in the README's "Not in scope yet" section:
+        subcommands, Kotlin Multiplatform, shell completions, custom converters by annotation, and
+        environment-variable fallback. A 👍 on an existing issue helps more than a new one.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: The problem, not the solution. What does your CLI need that Argot cannot express?
+    validations:
+      required: true
+
+  - type: textarea
+    id: sketch
+    attributes:
+      label: How might it look?
+      description: A sketch of the declaration you would want to write, if you have one in mind.
+      render: kotlin
+    validations:
+      required: false
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: What are you doing instead today?
+    validations:
+      required: false

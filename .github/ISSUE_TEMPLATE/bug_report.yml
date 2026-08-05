@@ -1,0 +1,56 @@
+name: Bug report
+description: Something in Argot behaves differently than documented
+labels: [bug]
+
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you expect, and what did you get instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: declaration
+    attributes:
+      label: Your parameter declaration
+      description: The `Arguments` subclass or the `@Command` data class.
+      render: kotlin
+    validations:
+      required: true
+
+  - type: input
+    id: argv
+    attributes:
+      label: The arguments you passed
+      placeholder: serve --port 8080 a.txt
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Argot version
+      placeholder: 0.1.1
+    validations:
+      required: true
+
+  - type: input
+    id: toolchain
+    attributes:
+      label: Kotlin and KSP versions
+      placeholder: Kotlin 2.3.20, KSP 2.3.9
+    validations:
+      required: false
+
+  - type: dropdown
+    id: style
+    attributes:
+      label: Which style?
+      options:
+        - Delegate style
+        - Annotation style
+        - Both
+    validations:
+      required: true
