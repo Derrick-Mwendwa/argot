@@ -12,10 +12,7 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-/**
- * Processor-level tests using the KSP2 compile-testing harness: one positive generation case and
- * several negative cases proving the compile-time validations report clear errors (§6.3, §8).
- */
+/** Compiles real sources through the KSP2 harness: one generation case, then the error cases. */
 @OptIn(ExperimentalCompilerApi::class)
 class ArgotProcessorTest {
 
@@ -62,6 +59,33 @@ class ArgotProcessorTest {
         assertContains(text, "public fun parseServeArgs(argv: Array<String>): ServeArgs")
         assertContains(text, "ArgotEngine.parse(spec, argv)")
         assertContains(text, "required = true") // port is required
+    }
+
+    @Test
+    fun generatedCodeIsReadable() {
+        val source = SourceFile.kotlin(
+            "ServeArgs.kt",
+            """
+            package com.example
+            import org.draftcode.argot.annotations.Command
+            import org.draftcode.argot.annotations.Option
+
+            @Command(name = "serve")
+            data class ServeArgs(
+                @Option(names = ["--port", "-p"]) val port: Int,
+            )
+            """.trimIndent(),
+        )
+        val compilation = newCompilation(source)
+        assertEquals(KotlinCompilation.ExitCode.OK, compilation.compile().exitCode)
+
+        val text = compilation.workingDir.walkTopDown()
+            .first { it.name == "parseServeArgs.kt" }
+            .readText()
+
+        assertContains(text, "\n    val spec = CommandSpec(", message = "expected four-space indentation")
+        assertContains(text, ")\n\n    val parsed = ", message = "expected a blank line before the parse call")
+        assertContains(text, "argv)\n\n    return ", message = "expected a blank line before the constructor call")
     }
 
     @Test
