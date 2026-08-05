@@ -8,7 +8,7 @@ plugins {
 
 allprojects {
     group = "org.draftcode"
-    version = "0.1.0-SNAPSHOT"
+    version = "0.1.1"
 }
 
 // The release workflow checks this against the git tag before publishing.
