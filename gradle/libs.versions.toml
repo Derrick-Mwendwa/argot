@@ -1,10 +1,19 @@
+# Kotlin, KSP and KotlinPoet must move as a matched set.
+#
+# KSP is published against one specific Kotlin version: symbol-processing-api 2.3.11 is built
+# against Kotlin 2.3.20, and no KSP release targets Kotlin 2.4.x yet. Raising `kotlin` on its own
+# leaves the processor compiling against a Kotlin it was never built for. KotlinPoet 2.3.0 aligns
+# with the same set.
+#
+# 2.3.20 is therefore the newest mutually compatible trio. Bump all three together when a matched
+# set ships. Dependabot is configured to leave them alone; see .github/dependabot.yml.
 [versions]
 kotlin = "2.3.20"
-ksp = "2.3.9"
+ksp = "2.3.11"
 kotlinpoet = "2.3.0"
-mavenPublish = "0.36.0"
+mavenPublish = "0.37.0"
 kctfork = "0.13.0"
-junit = "5.10.1"
+junit = "6.1.2"
 
 [libraries]
 ksp-symbolProcessingApi = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
