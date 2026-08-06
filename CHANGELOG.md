@@ -15,6 +15,8 @@ No API or behaviour changes.
 
 ### Internal
 
+- Updated KSP to 2.3.11, the Gradle wrapper to 9.6.1, the publishing plugin to 0.37.0, and JUnit to
+  6.1.2. Kotlin stays on 2.3.20: no KSP release targets Kotlin 2.4.x yet, and the two must match.
 - The public ABI of every published module is recorded under `api/` and checked by `./gradlew build`,
   so an unintended API change now fails CI instead of reaching a release. See the Versioning section
   of `RELEASING.md` for why this matters to code nobody types by hand.

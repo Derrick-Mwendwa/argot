@@ -33,6 +33,20 @@ them is deliberate, run `./gradlew updateKotlinAbi` and commit the updated dump 
 declaration, changes a signature, alters the generated-code contract, or changes parsing or `--help`
 in a way that could break working code requires a major bump.
 
+### Dependency updates
+
+Ask one question: **does it change what a consumer must have or do?**
+
+| Update | Bump | Why |
+|---|---|---|
+| Gradle wrapper, test libraries, publishing plugin | patch | Build-only. A consumer cannot observe it. |
+| KotlinPoet | patch | Compile-time inside the processor, unless generated output changes. |
+| **Kotlin and KSP** | **minor** | Not build-only. Annotation-style users must apply a matching Kotlin and KSP version in their own build, so raising ours raises their floor. |
+
+Kotlin and KSP are also a matched set: KSP is published against one specific Kotlin version, and
+Dependabot has no way to know that — left alone it will raise Kotlin past the newest KSP built for
+it. Both are in Dependabot's ignore list and are bumped by hand, together, as a minor release.
+
 ## Cutting a release
 
 1. Make sure `main` is green.
