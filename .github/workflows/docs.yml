@@ -1,0 +1,166 @@
+# Builds and deploys argot.draftcode.org.
+#
+# The site is two VitePress builds plus the Dokka reference, assembled onto the gh-pages branch:
+#
+#   /                  landing and news, unversioned, rebuilt every time
+#   /docs/<version>/   one frozen tree per release, plus `latest` and `dev`
+#   /docs/<version>/api/   Dokka output, copied in beside the guides
+#
+# Version trees accumulate, so this deliberately does NOT use actions/deploy-pages: that replaces the
+# whole site on every run and would delete every previously published version. Instead it commits
+# into gh-pages, touching only the paths it owns.
+name: docs
+
+on:
+  push:
+    branches: [ main ]
+  release:
+    types: [ published ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Both triggers push to the same branch, so they must never run at once. Queue rather than cancel:
+# a cancelled release deploy would leave a version half-written.
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Decide which version tree this run writes
+        id: target
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            version="${GITHUB_REF_NAME#v}"
+            echo "version=$version"  >> "$GITHUB_OUTPUT"
+            echo "alias=latest"      >> "$GITHUB_OUTPUT"
+          else
+            echo "version=dev"       >> "$GITHUB_OUTPUT"
+            echo "alias="            >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Generate the API reference
+        run: ./gradlew dokkaGenerate --stacktrace
+
+      - name: Verify the documented samples still compile
+        # On a release, check them against the artifact users actually download rather than the
+        # working tree. A guide that only compiles against unreleased code is a broken guide.
+        run: |
+          if [ "${{ steps.target.outputs.version }}" = "dev" ]; then
+            ./gradlew :docs-samples:build --stacktrace
+          else
+            ./gradlew :docs-samples:build -PargotVersion=${{ steps.target.outputs.version }} --stacktrace
+          fi
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Install site dependencies
+        working-directory: site
+        run: npm ci
+
+      - name: Build the unversioned root
+        working-directory: site
+        run: npm run build:root
+
+      - name: Build the versioned docs
+        working-directory: site
+        env:
+          ARGOT_DOCS_VERSION: ${{ steps.target.outputs.version }}
+        run: npm run build:docs
+
+      - name: Build the latest alias
+        if: steps.target.outputs.alias != ''
+        working-directory: site
+        # `latest` needs its own build rather than a copy: VitePress bakes the base path into every
+        # asset URL, so a tree built for /docs/0.1.2/ serves broken assets from /docs/latest/.
+        env:
+          ARGOT_DOCS_VERSION: ${{ steps.target.outputs.alias }}
+        run: npm run build:docs
+
+      - name: Copy the reference into each docs tree
+        run: |
+          for tree in dist/docs/*/; do
+            mkdir -p "$tree/api"
+            cp -r build/dokka/html/. "$tree/api/"
+          done
+
+      - name: Check out gh-pages
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            git fetch origin gh-pages --depth 1
+            git worktree add gh-pages origin/gh-pages
+          else
+            git worktree add --detach gh-pages
+            git -C gh-pages checkout --orphan gh-pages
+            git -C gh-pages rm -rf . || true
+          fi
+
+      - name: Assemble the site
+        run: |
+          # Root: replace everything except the accumulated version trees.
+          find gh-pages -mindepth 1 -maxdepth 1 \
+            ! -name .git ! -name docs ! -name CNAME -exec rm -rf {} +
+          cp -r dist/root/. gh-pages/
+
+          # Version trees: replace only the ones this run built.
+          for tree in dist/docs/*/; do
+            name=$(basename "$tree")
+            rm -rf "gh-pages/docs/$name"
+            mkdir -p "gh-pages/docs"
+            cp -r "$tree" "gh-pages/docs/$name"
+          done
+
+          echo "argot.draftcode.org" > gh-pages/CNAME
+          # Without this, Pages runs Jekyll and drops the asset directories VitePress emits.
+          touch gh-pages/.nojekyll
+
+          # Rebuild the version index from what is actually on the branch, so it can never claim a
+          # version that is not there.
+          python3 - <<'PY'
+          import json, os, re
+          root = "gh-pages/docs"
+          names = sorted(os.listdir(root)) if os.path.isdir(root) else []
+          def sort_key(n):
+              m = re.match(r"^(\d+)\.(\d+)\.(\d+)$", n)
+              return (0, tuple(-int(p) for p in m.groups())) if m else (1, n)
+          special = [n for n in names if n in ("latest", "dev")]
+          releases = sorted([n for n in names if n not in ("latest", "dev")], key=sort_key)
+          out = [{"id": n, "label": n if n != "latest" else "latest (current release)"}
+                 for n in special + releases]
+          with open("gh-pages/versions.json", "w") as f:
+              json.dump(out, f, indent=2)
+          print("versions.json ->", [v["id"] for v in out])
+          PY
+
+      - name: Commit and push
+        working-directory: gh-pages
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "nothing changed"
+          else
+            git commit -m "Deploy docs for ${{ steps.target.outputs.version }}"
+            git push origin HEAD:gh-pages
+          fi
