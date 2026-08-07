@@ -100,6 +100,32 @@
     --footer-font-color: #98989f;
 }
 
+/*
+ * Dokka fills the active table-of-contents entry with --color-key-blue and always writes light text
+ * on it (`color: var(--color-text-dt)`, regardless of theme). That token has to serve two
+ * incompatible roles at once: a fill that light text sits on, and link text read against the page
+ * background. In dark mode our accent is a light violet chosen for the second role, so as a fill it
+ * left the active item at 1.51:1 and the skip link at 1.57:1 — both far below the 4.5:1 WCAG AA
+ * needs, and the skip link is an accessibility affordance in the first place.
+ *
+ * Dark mode therefore decouples them: a soft tinted surface with accent-coloured text, which is what
+ * VitePress does for its own active item. Measured on the deployed page, compositing the translucent
+ * fill over the real background: 6.15:1 for the active entry, 7.08:1 for the skip link.
+ *
+ * Light mode already passes (7.08:1 and 5.86:1) because the accent there is dark enough to carry
+ * light text, so it is deliberately left alone.
+ */
+.theme-dark .toc--part[data-active] > .toc--row .toc--link,
+.theme-dark .toc--part[data-active] > .toc--row .toc--button {
+    background: rgba(168, 177, 255, 0.16);
+    color: #a8b1ff;
+}
+
+.theme-dark .toc--skip-link {
+    background: #3451b2;
+    color: #ffffff;
+}
+
 /* The supplied mark is square; Dokka's own is not, so it needs contain rather than cover. */
 .library-name--link::before {
     background-size: contain;
