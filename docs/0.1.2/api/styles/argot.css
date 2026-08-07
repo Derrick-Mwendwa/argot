@@ -1,94 +1,119 @@
 /*
- * Pulls Dokka's generated reference toward the VitePress theme used for the rest of the site, so
- * moving between /learn/ and /api/ does not feel like two different products.
+ * Makes Dokka's generated reference sit flush against the VitePress theme, so moving between
+ * /learn/ and /api/ does not feel like two different products.
  *
- * The custom property names below are Dokka's own (see its styles/style.css) and the dark theme is
- * selected with `.theme-dark`, not a media query — both verified against the Dokka 2.2.0 output
- * rather than assumed. Re-check them when Dokka is upgraded.
+ * Every value below is VitePress's own, read out of the running site with getComputedStyle rather
+ * than eyeballed, so the two halves share one palette by construction:
+ *
+ *              light                       dark
+ *   brand      #3451b2                     #a8b1ff
+ *   bg         #ffffff                     #1b1b1f
+ *   bg alt     #f6f6f7                     #161618
+ *   bg soft    #f6f6f7                     #202127
+ *   text       #3c3c43                     #dfdfd6
+ *   text soft  #67676c                     #98989f
+ *   divider    #e2e2e3                     #2e2e32
+ *
+ * Dokka 2.2 paints from a `--color-*` token family defined in ui-kit.min.css. The older
+ * `--background-color` style names in style.css still exist but no longer drive the page — setting
+ * only those looks like it works and changes nothing. Both are set here: the ui-kit tokens do the
+ * work, the legacy ones catch rules that still reference them.
+ *
+ * Re-check the token names when Dokka is upgraded; they are internal to its theme.
  */
 
 :root {
-    --argot-brand: #5a4bd6;
-    --argot-brand-hover: #7c6cf5;
-    --argot-text: #213547;
-    --argot-text-soft: #476582;
-    --argot-bg: #ffffff;
-    --argot-bg-soft: #f6f6f7;
-    --argot-border: #e2e2e3;
+    --color-key-blue: #3451b2;
+    --color-key-blue-hover: #3a5ccc;
+    --color-key-blue-50: rgba(52, 81, 178, 0.5);
 
-    --default-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        "Helvetica Neue", Arial, sans-serif;
-    --default-monospace-font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular,
-        "SF Mono", Menlo, Consolas, monospace;
-    --default-font-size: 16px;
+    --color-background: #ffffff;
+    --color-background-page: #ffffff;
+    --color-background-nav: #f6f6f7;
+    --color-background-footer: #f6f6f7;
+    --color-background-hover: rgba(0, 0, 0, 0.04);
+    --color-background-code-block: #f6f6f7;
+    --color-background-inline-code: rgba(142, 150, 170, 0.14);
 
-    --background-color: var(--argot-bg);
-    --default-font-color: var(--argot-text);
-    --border-color: var(--argot-border);
-    --blockquote-background: var(--argot-bg-soft);
-    --hover-link-color: var(--argot-brand-hover);
-    --navigation-highlight-color: var(--argot-brand);
-    --active-section-color: var(--argot-brand);
-    --inactive-section-color: var(--argot-text-soft);
-    --sidemenu-section-active-color: var(--argot-brand);
-    --active-tab-border-color: var(--argot-brand);
-    --copy-icon-hover-color: var(--argot-brand);
-    --footer-background: var(--argot-bg-soft);
-    --footer-font-color: var(--argot-text-soft);
+    --color-text: #3c3c43;
+    --color-text-light: #67676c;
+
+    /* Legacy names from style.css, kept for rules that still read them. */
+    --background-color: #ffffff;
+    --default-font-color: #3c3c43;
+    --border-color: #e2e2e3;
+    --blockquote-background: #f6f6f7;
+    --hover-link-color: #3a5ccc;
+    --navigation-highlight-color: #3451b2;
+    --active-section-color: #3451b2;
+    --inactive-section-color: #67676c;
+    --sidemenu-section-active-color: #3451b2;
+    --active-tab-border-color: #3451b2;
+    --footer-background: #f6f6f7;
+    --footer-font-color: #67676c;
+
+    --default-font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, sans-serif;
+    --default-monospace-font-family: ui-monospace, "Menlo", "Monaco", "Consolas", monospace;
+
+    /* Replaces Dokka's bundled Kotlin mark. The file is supplied via customAssets in the root
+       build script, which overwrites images/logo-icon.svg in the generated output. */
+    --dokka-logo-image-url: url('../images/logo-icon.svg');
 }
 
 .theme-dark {
-    --argot-brand: #a89bff;
-    --argot-brand-hover: #c4bbff;
-    --argot-text: rgba(255, 255, 255, 0.87);
-    --argot-text-soft: rgba(235, 235, 245, 0.6);
-    --argot-bg: #1b1b1f;
-    --argot-bg-soft: #202127;
-    --argot-border: #2e2e32;
+    --color-key-blue: #a8b1ff;
+    --color-key-blue-hover: #c4cbff;
+    --color-key-blue-50: rgba(168, 177, 255, 0.5);
 
-    --background-color: var(--argot-bg);
-    --default-font-color: var(--argot-text);
-    --border-color: var(--argot-border);
-    --blockquote-background: var(--argot-bg-soft);
+    --color-background: #1b1b1f;
+    --color-background-page-dt: #1b1b1f;
+    --color-background-nav-dt: #161618;
+    --color-background-footer-dt: #202127;
+    --color-background-hover: rgba(255, 255, 255, 0.08);
+    --color-background-code-block: #202127;
+    --color-background-inline-code: rgba(101, 117, 133, 0.16);
+
+    --color-text-dt: #dfdfd6;
+    --color-text-light-dt: #98989f;
+
+    --background-color: #1b1b1f;
+    --default-font-color: #dfdfd6;
+    --border-color: #2e2e32;
+    --blockquote-background: #202127;
+    --hover-link-color: #c4cbff;
+    --navigation-highlight-color: #a8b1ff;
+    --active-section-color: #a8b1ff;
+    --inactive-section-color: #98989f;
+    --sidemenu-section-active-color: #a8b1ff;
+    --active-tab-border-color: #a8b1ff;
+    --footer-background: #202127;
+    --footer-font-color: #98989f;
 }
 
-/* VitePress-ish surfaces: flatter, softer radii, less chrome. */
+/* The supplied mark is square; Dokka's own is not, so it needs contain rather than cover. */
+.library-name--link::before {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .navigation {
-    background: var(--argot-bg-soft);
-    border-bottom: 1px solid var(--argot-border);
+    border-bottom: 1px solid var(--border-color);
     box-shadow: none;
 }
 
-.sideMenuPart[data-active] > .overview .sideMenuPart__title,
-.toc--part[data-active] {
-    color: var(--argot-brand);
-    font-weight: 600;
-}
-
 code,
-pre,
-.symbol {
+pre {
     font-family: var(--default-monospace-font-family);
-    border-radius: 8px;
 }
 
 .sample-container,
 div.symbol {
-    background: var(--argot-bg-soft);
-    border: 1px solid var(--argot-border);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
 }
 
-a {
-    color: var(--argot-brand);
-    text-decoration: none;
-}
-
-a:hover {
-    color: var(--argot-brand-hover);
-    text-decoration: underline;
-}
-
 .footer {
-    border-top: 1px solid var(--argot-border);
+    border-top: 1px solid var(--border-color);
 }
