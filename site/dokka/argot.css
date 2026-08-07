@@ -29,8 +29,16 @@
 
     --color-background: #ffffff;
     --color-background-page: #ffffff;
-    --color-background-nav: #f6f6f7;
     --color-background-footer: #f6f6f7;
+
+    /* The header stays dark in BOTH themes, which is Dokka's own design and not an oversight.
+       Its nav icons are background-image SVGs with white baked into the file — not CSS masks — and
+       `.navigation`, `.library-name--link` and `.library-version` all hardcode
+       `color: var(--color-text-dt)` regardless of theme. Give the bar a light background and the
+       text drops to 1.05:1 contrast and every icon disappears; the only rescue is filter: invert(),
+       which would break silently the moment Dokka changes an icon. So it keeps a dark bar, recoloured
+       to VitePress's dark surface so it reads as deliberate rather than leftover. */
+    --color-background-nav: #161618;
     --color-background-hover: rgba(0, 0, 0, 0.04);
     --color-background-code-block: #f6f6f7;
     --color-background-inline-code: rgba(142, 150, 170, 0.14);
@@ -68,6 +76,7 @@
 
     --color-background: #1b1b1f;
     --color-background-page-dt: #1b1b1f;
+    /* Same bar as light mode — see the note above. */
     --color-background-nav-dt: #161618;
     --color-background-footer-dt: #202127;
     --color-background-hover: rgba(255, 255, 255, 0.08);
@@ -89,6 +98,32 @@
     --active-tab-border-color: #a8b1ff;
     --footer-background: #202127;
     --footer-font-color: #98989f;
+}
+
+/*
+ * Dokka fills the active table-of-contents entry with --color-key-blue and always writes light text
+ * on it (`color: var(--color-text-dt)`, regardless of theme). That token has to serve two
+ * incompatible roles at once: a fill that light text sits on, and link text read against the page
+ * background. In dark mode our accent is a light violet chosen for the second role, so as a fill it
+ * left the active item at 1.51:1 and the skip link at 1.57:1 — both far below the 4.5:1 WCAG AA
+ * needs, and the skip link is an accessibility affordance in the first place.
+ *
+ * Dark mode therefore decouples them: a soft tinted surface with accent-coloured text, which is what
+ * VitePress does for its own active item. Measured on the deployed page, compositing the translucent
+ * fill over the real background: 6.15:1 for the active entry, 7.08:1 for the skip link.
+ *
+ * Light mode already passes (7.08:1 and 5.86:1) because the accent there is dark enough to carry
+ * light text, so it is deliberately left alone.
+ */
+.theme-dark .toc--part[data-active] > .toc--row .toc--link,
+.theme-dark .toc--part[data-active] > .toc--row .toc--button {
+    background: rgba(168, 177, 255, 0.16);
+    color: #a8b1ff;
+}
+
+.theme-dark .toc--skip-link {
+    background: #3451b2;
+    color: #ffffff;
 }
 
 /* The supplied mark is square; Dokka's own is not, so it needs contain rather than cover. */
