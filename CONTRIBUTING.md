@@ -68,6 +68,36 @@ declaration, or a signature change that would break code compiled against the pr
 Versioning section of [RELEASING.md](RELEASING.md) explains why that matters even for declarations
 nobody types by hand.
 
+## The documentation site
+
+[argot.draftcode.org](https://argot.draftcode.org) is built from `site/` and deployed by
+`.github/workflows/docs.yml`. To work on it:
+
+```sh
+cd site
+npm install
+npm run dev        # the guides
+npm run dev:root   # the landing page and news
+```
+
+Two rules keep the site honest:
+
+- **Code blocks in the guides are never typed by hand.** They are regions of real files in
+  `docs-samples/`, pulled in with VitePress's `<<<` syntax. Add a `// #region name` marker around the
+  code you want to show and reference it from the Markdown. If a snippet appears on the site, a
+  compiler has checked it.
+- **`docs-samples` is verified against the published artifact at release time**, not just the working
+  tree, so a guide cannot document behaviour that only exists on `main`:
+
+  ```sh
+  ./gradlew :docs-samples:build                      # against the local project
+  ./gradlew :docs-samples:build -PargotVersion=0.1.2  # against Maven Central
+  ```
+
+The API reference is generated from KDoc by Dokka, so it cannot drift — but that also means KDoc
+edits are user-facing documentation edits. Prose in `site/learn/` still needs a human to read it
+before a release; compiling proves the code runs, not that the explanation is still true.
+
 ## Tests
 
 Every behavioural change needs a test. The suites are:
