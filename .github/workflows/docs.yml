@@ -17,6 +17,16 @@ on:
   release:
     types: [ published ]
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tree to build, e.g. 0.1.2. Leave blank to deploy dev from main."
+        required: false
+        default: ""
+      update_latest:
+        description: "Also point /docs/latest/ at it"
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -31,19 +41,34 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-
       - name: Decide which version tree this run writes
         id: target
         run: |
           if [ "${{ github.event_name }}" = "release" ]; then
-            version="${GITHUB_REF_NAME#v}"
-            echo "version=$version"  >> "$GITHUB_OUTPUT"
-            echo "alias=latest"      >> "$GITHUB_OUTPUT"
+            # A release always becomes both its own tree and `latest`. The checkout below already
+            # lands on the tag, so this tree is built from exactly the code that shipped.
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+            echo "alias=latest"                 >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ inputs.version }}" ]; then
+            # Manual backfill or re-deploy of an already released version.
+            #
+            # This deliberately builds the prose from the default branch rather than from the tag.
+            # Releases before the site existed have no prose at their tag, and a typo fix for an old
+            # version is exactly the case where you want current wording. What the version does
+            # control is the samples: they are compiled against that release from Maven Central, so
+            # the code on the page is still verified against the artifact it claims to document.
+            echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+            if [ "${{ inputs.update_latest }}" = "true" ]; then
+              echo "alias=latest" >> "$GITHUB_OUTPUT"
+            else
+              echo "alias="       >> "$GITHUB_OUTPUT"
+            fi
           else
-            echo "version=dev"       >> "$GITHUB_OUTPUT"
-            echo "alias="            >> "$GITHUB_OUTPUT"
+            echo "version=dev" >> "$GITHUB_OUTPUT"
+            echo "alias="      >> "$GITHUB_OUTPUT"
           fi
+
+      - uses: actions/checkout@v7
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
