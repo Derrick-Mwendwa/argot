@@ -2,5 +2,13 @@
   {
     "id": "dev",
     "label": "dev"
+  },
+  {
+    "id": "latest",
+    "label": "latest (current release)"
+  },
+  {
+    "id": "0.1.2",
+    "label": "0.1.2"
   }
 ]

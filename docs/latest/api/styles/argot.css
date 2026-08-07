@@ -1,0 +1,94 @@
+/*
+ * Pulls Dokka's generated reference toward the VitePress theme used for the rest of the site, so
+ * moving between /learn/ and /api/ does not feel like two different products.
+ *
+ * The custom property names below are Dokka's own (see its styles/style.css) and the dark theme is
+ * selected with `.theme-dark`, not a media query — both verified against the Dokka 2.2.0 output
+ * rather than assumed. Re-check them when Dokka is upgraded.
+ */
+
+:root {
+    --argot-brand: #5a4bd6;
+    --argot-brand-hover: #7c6cf5;
+    --argot-text: #213547;
+    --argot-text-soft: #476582;
+    --argot-bg: #ffffff;
+    --argot-bg-soft: #f6f6f7;
+    --argot-border: #e2e2e3;
+
+    --default-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+    --default-monospace-font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular,
+        "SF Mono", Menlo, Consolas, monospace;
+    --default-font-size: 16px;
+
+    --background-color: var(--argot-bg);
+    --default-font-color: var(--argot-text);
+    --border-color: var(--argot-border);
+    --blockquote-background: var(--argot-bg-soft);
+    --hover-link-color: var(--argot-brand-hover);
+    --navigation-highlight-color: var(--argot-brand);
+    --active-section-color: var(--argot-brand);
+    --inactive-section-color: var(--argot-text-soft);
+    --sidemenu-section-active-color: var(--argot-brand);
+    --active-tab-border-color: var(--argot-brand);
+    --copy-icon-hover-color: var(--argot-brand);
+    --footer-background: var(--argot-bg-soft);
+    --footer-font-color: var(--argot-text-soft);
+}
+
+.theme-dark {
+    --argot-brand: #a89bff;
+    --argot-brand-hover: #c4bbff;
+    --argot-text: rgba(255, 255, 255, 0.87);
+    --argot-text-soft: rgba(235, 235, 245, 0.6);
+    --argot-bg: #1b1b1f;
+    --argot-bg-soft: #202127;
+    --argot-border: #2e2e32;
+
+    --background-color: var(--argot-bg);
+    --default-font-color: var(--argot-text);
+    --border-color: var(--argot-border);
+    --blockquote-background: var(--argot-bg-soft);
+}
+
+/* VitePress-ish surfaces: flatter, softer radii, less chrome. */
+.navigation {
+    background: var(--argot-bg-soft);
+    border-bottom: 1px solid var(--argot-border);
+    box-shadow: none;
+}
+
+.sideMenuPart[data-active] > .overview .sideMenuPart__title,
+.toc--part[data-active] {
+    color: var(--argot-brand);
+    font-weight: 600;
+}
+
+code,
+pre,
+.symbol {
+    font-family: var(--default-monospace-font-family);
+    border-radius: 8px;
+}
+
+.sample-container,
+div.symbol {
+    background: var(--argot-bg-soft);
+    border: 1px solid var(--argot-border);
+    border-radius: 8px;
+}
+
+a {
+    color: var(--argot-brand);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--argot-brand-hover);
+    text-decoration: underline;
+}
+
+.footer {
+    border-top: 1px solid var(--argot-border);
+}
