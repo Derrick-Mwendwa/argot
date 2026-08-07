@@ -20,6 +20,8 @@ dokka {
         homepageLink.set("https://argot.draftcode.org")
         footerMessage.set("Argot — Apache 2.0")
         customStyleSheets.from(rootProject.file("site/dokka/argot.css"))
+        // Overwrites images/logo-icon.svg, replacing Dokka's bundled Kotlin mark.
+        customAssets.from(rootProject.file("site/dokka/logo-icon.svg"))
     }
 }
 
@@ -32,6 +34,7 @@ subprojects {
                 homepageLink.set("https://argot.draftcode.org")
                 footerMessage.set("Argot — Apache 2.0")
                 customStyleSheets.from(rootProject.file("site/dokka/argot.css"))
+                customAssets.from(rootProject.file("site/dokka/logo-icon.svg"))
             }
         }
     }
