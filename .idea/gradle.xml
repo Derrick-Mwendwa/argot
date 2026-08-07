@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/argot-annotations" />
             <option value="$PROJECT_DIR$/argot-core" />
             <option value="$PROJECT_DIR$/argot-processor" />
+            <option value="$PROJECT_DIR$/docs-samples" />
             <option value="$PROJECT_DIR$/sample" />
           </set>
         </option>
