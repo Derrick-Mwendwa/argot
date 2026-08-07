@@ -6,6 +6,8 @@ All notable changes to Argot are recorded here. The format follows
 
 ## Unreleased
 
+## 0.1.2 — 2026-08-06
+
 No API or behaviour changes.
 
 ### Changed
