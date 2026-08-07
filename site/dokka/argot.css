@@ -29,8 +29,16 @@
 
     --color-background: #ffffff;
     --color-background-page: #ffffff;
-    --color-background-nav: #f6f6f7;
     --color-background-footer: #f6f6f7;
+
+    /* The header stays dark in BOTH themes, which is Dokka's own design and not an oversight.
+       Its nav icons are background-image SVGs with white baked into the file — not CSS masks — and
+       `.navigation`, `.library-name--link` and `.library-version` all hardcode
+       `color: var(--color-text-dt)` regardless of theme. Give the bar a light background and the
+       text drops to 1.05:1 contrast and every icon disappears; the only rescue is filter: invert(),
+       which would break silently the moment Dokka changes an icon. So it keeps a dark bar, recoloured
+       to VitePress's dark surface so it reads as deliberate rather than leftover. */
+    --color-background-nav: #161618;
     --color-background-hover: rgba(0, 0, 0, 0.04);
     --color-background-code-block: #f6f6f7;
     --color-background-inline-code: rgba(142, 150, 170, 0.14);
@@ -68,6 +76,7 @@
 
     --color-background: #1b1b1f;
     --color-background-page-dt: #1b1b1f;
+    /* Same bar as light mode — see the note above. */
     --color-background-nav-dt: #161618;
     --color-background-footer-dt: #202127;
     --color-background-hover: rgba(255, 255, 255, 0.08);
