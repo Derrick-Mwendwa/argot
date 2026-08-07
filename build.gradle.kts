@@ -4,6 +4,37 @@ plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.mavenPublish) apply false
+    alias(libs.plugins.dokka)
+}
+
+// The API reference covers only what a consumer writes against. argot-processor is deliberately
+// excluded: its one public symbol is the KSP entry point, which nobody calls by hand.
+dependencies {
+    dokka(project(":argot-core"))
+    dokka(project(":argot-annotations"))
+}
+
+dokka {
+    moduleName.set("Argot")
+    pluginsConfiguration.html {
+        homepageLink.set("https://argot.draftcode.org")
+        footerMessage.set("Argot — Apache 2.0")
+        customStyleSheets.from(rootProject.file("site/dokka/argot.css"))
+    }
+}
+
+// The root configuration above only styles the aggregate index. Each module generates its own pages,
+// so the stylesheet has to be registered there too or the reference ships half-themed.
+subprojects {
+    plugins.withId("org.jetbrains.dokka") {
+        extensions.configure<org.jetbrains.dokka.gradle.DokkaExtension> {
+            pluginsConfiguration.html {
+                homepageLink.set("https://argot.draftcode.org")
+                footerMessage.set("Argot — Apache 2.0")
+                customStyleSheets.from(rootProject.file("site/dokka/argot.css"))
+            }
+        }
+    }
 }
 
 allprojects {
