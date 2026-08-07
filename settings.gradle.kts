@@ -23,4 +23,5 @@ include(
     "argot-annotations",
     "argot-processor",
     "sample",
+    "docs-samples",
 )
