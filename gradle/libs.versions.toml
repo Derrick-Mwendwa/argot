@@ -27,6 +27,12 @@ kctfork-ksp = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kctfork" }
 # Test-only: aligns the JUnit 5 platform (used by kotlin-test) to the catalog-pinned version.
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 
+# Build-tool only: compiled against by tools/dokka-json, which runs inside Dokka's worker and
+# therefore declares both as compileOnly. Must track the `dokka` version exactly — the plugin binds
+# to Dokka's extension points, so a mismatch fails at generation time rather than at compile time.
+dokka-core = { module = "org.jetbrains.dokka:dokka-core", version.ref = "dokka" }
+dokka-base = { module = "org.jetbrains.dokka:dokka-base", version.ref = "dokka" }
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

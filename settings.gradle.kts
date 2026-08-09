@@ -24,4 +24,5 @@ include(
     "argot-processor",
     "sample",
     "docs-samples",
+    "tools:dokka-json",
 )

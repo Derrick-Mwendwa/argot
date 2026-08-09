@@ -1,0 +1,444 @@
+/*
+ * Argot's design tokens.
+ *
+ * Everything visual reads from here, and VitePress's own variables are re-pointed at these below, so
+ * the default theme's chrome — nav, sidebar, search, prose — inherits the same palette as the parts
+ * we render ourselves. Nothing should hardcode a colour outside this file.
+ */
+
+:root {
+  --a-font-display: 'Space Grotesk Variable', 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --a-font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo,
+    monospace;
+
+  --a-paper: #fbfaf7;
+  --a-card: #ffffff;
+  --a-ink: #131316;
+
+  --a-text-body: #54525c;
+  --a-text-secondary: #3d3b45;
+  --a-text-muted: #6e6b78;
+  --a-text-faint: #8a8795;
+  --a-text-faintest: #9a97a3;
+
+  --a-accent: #5b4bea;
+  --a-accent-contrast: #ffffff;
+
+  --a-code-string: #b4611b;
+  --a-code-annotation: #0f8a6a;
+  --a-code-comment: #9a97a3;
+  --a-code-keyword: #5b4bea;
+
+  /* The dark panel is a fixed surface, not a theme: the terminal stays dark in both modes, so its
+     syntax colours are absolute rather than derived from the light/dark pair above. */
+  --a-panel-bg: #131316;
+  --a-panel-text: #d6d4de;
+  --a-panel-muted: #7c7a86;
+  --a-panel-accent: #a79bff;
+  --a-panel-prompt: #4cc4a0;
+  --a-panel-string: #dc9a5e;
+  --a-panel-keyword: #a79bff;
+  --a-panel-annotation: #4cc4a0;
+  --a-panel-comment: #7c7a86;
+
+  --a-hairline: rgba(19, 19, 22, 0.09);
+  --a-hairline-strong: rgba(19, 19, 22, 0.12);
+  --a-grid: rgba(19, 19, 22, 0.045);
+
+  --a-row-hover: rgba(91, 75, 234, 0.035);
+  --a-highlight: rgba(91, 75, 234, 0.09);
+
+  /* The accent tint reads as a highlight wherever it lands, and inline code is far too frequent to
+     be highlighted. A neutral wash sits behind the text without competing with real links. */
+  --a-chip: rgba(19, 19, 22, 0.055);
+  --a-chip-border: rgba(19, 19, 22, 0.07);
+  --a-accent-tint: rgba(91, 75, 234, 0.1);
+
+  --a-gutter: 40px;
+  --a-header-h: 68px;
+  --a-max-width: 1180px;
+
+  --a-radius-pill: 999px;
+  --a-radius-panel: 16px;
+  --a-radius-panel-sm: 14px;
+  --a-radius-chip: 8px;
+  --a-radius-chip-sm: 5px;
+
+  --a-shadow-terminal: 0 30px 60px -30px rgba(19, 19, 22, 0.55);
+}
+
+/*
+ * The dark variant is derived, not specified: the mock is light-only, but the theme toggle predates
+ * it and removing a control people already use is a regression. The ink that backs the terminal
+ * becomes the page, and the hairlines invert.
+ */
+.dark {
+  --a-paper: #131316;
+  --a-card: #1a1a20;
+  --a-ink: #f2f1ee;
+
+  --a-text-body: #b4b1bd;
+  --a-text-secondary: #cbc9d3;
+  --a-text-muted: #918e9c;
+  --a-text-faint: #7c7a86;
+  --a-text-faintest: #6e6b78;
+
+  --a-accent: #a79bff;
+  --a-accent-contrast: #131316;
+
+  --a-code-string: #dc9a5e;
+  --a-code-annotation: #4cc4a0;
+  --a-code-comment: #7c7a86;
+  --a-code-keyword: #a79bff;
+
+  --a-panel-bg: #0e0e11;
+
+  --a-hairline: rgba(255, 255, 255, 0.1);
+  --a-hairline-strong: rgba(255, 255, 255, 0.15);
+  --a-grid: rgba(255, 255, 255, 0.04);
+
+  --a-row-hover: rgba(167, 155, 255, 0.05);
+  --a-highlight: rgba(167, 155, 255, 0.12);
+  --a-chip: rgba(255, 255, 255, 0.07);
+  --a-chip-border: rgba(255, 255, 255, 0.09);
+  --a-accent-tint: rgba(167, 155, 255, 0.14);
+
+  --a-shadow-terminal: 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+}
+
+/* ---- VitePress variables, re-pointed ------------------------------------------------------- */
+
+:root {
+  --vp-font-family-base: var(--a-font-display);
+  --vp-font-family-mono: var(--a-font-mono);
+
+  --vp-c-bg: var(--a-paper);
+  --vp-c-bg-alt: var(--a-card);
+  --vp-c-bg-soft: color-mix(in srgb, var(--a-ink) 3.5%, var(--a-paper));
+  --vp-c-bg-elv: var(--a-card);
+
+  --vp-c-text-1: var(--a-ink);
+  --vp-c-text-2: var(--a-text-body);
+  --vp-c-text-3: var(--a-text-muted);
+
+  --vp-c-brand-1: var(--a-accent);
+  --vp-c-brand-2: var(--a-accent);
+  --vp-c-brand-3: var(--a-accent);
+  --vp-c-brand-soft: var(--a-accent-tint);
+
+  --vp-c-divider: var(--a-hairline);
+  --vp-c-border: var(--a-hairline-strong);
+  --vp-c-gutter: var(--a-hairline);
+
+  --vp-nav-height: var(--a-header-h);
+  --vp-layout-max-width: 1440px;
+
+  --vp-button-brand-bg: var(--a-ink);
+  --vp-button-brand-hover-bg: var(--a-ink);
+  --vp-button-brand-text: var(--a-paper);
+  --vp-button-brand-border: transparent;
+}
+
+.dark {
+  --vp-c-bg-soft: color-mix(in srgb, #ffffff 4%, var(--a-paper));
+}
+
+/* ---- Base typography ----------------------------------------------------------------------- */
+
+html {
+  font-family: var(--a-font-display);
+}
+
+body {
+  background: var(--a-paper);
+  color: var(--a-text-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--a-ink);
+  font-family: var(--a-font-display);
+  font-weight: 600;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--a-font-mono);
+  font-feature-settings: 'liga' 0;
+}
+
+/* The eyebrow that labels every section: mono, wide-tracked, uppercase. */
+.a-eyebrow {
+  font-family: var(--a-font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--a-text-faint);
+}
+
+/* ---- Nav ----------------------------------------------------------------------------------- */
+
+.VPNav {
+  backdrop-filter: blur(14px);
+}
+
+.VPNavBar:not(.has-sidebar):not(.home.top) {
+  background-color: color-mix(in srgb, var(--a-paper) 82%, transparent);
+}
+
+.VPNavBar .title,
+.VPNavBarMenuLink,
+.VPNavBarMenuGroup .button {
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.VPNavBar .divider {
+  border-color: var(--a-hairline);
+}
+
+/* ---- Sidebar ------------------------------------------------------------------------------- */
+
+.VPSidebarItem .text {
+  white-space: normal;
+  line-height: 1.45;
+}
+
+/* Group rows are a text column plus a fixed caret column. Centring both on the row keeps the
+   chevron on the first line when a long group title wraps to two. */
+.VPSidebarItem.level-0 > .item {
+  align-items: center;
+  gap: 0.5rem;
+  padding-right: 0;
+}
+
+.VPSidebarItem.level-0 > .item > .text {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.35rem 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.VPSidebarItem.level-0 > .item > .caret {
+  flex: 0 0 24px;
+  align-self: center;
+  margin: 0;
+  padding: 0;
+}
+
+.VPSidebarItem.level-1 .text,
+.VPSidebarItem.level-2 .text {
+  padding: 0.3rem 0;
+  font-size: 13.5px;
+}
+
+/* Dotted identifiers in the reference rail. The break opportunities come from <wbr> in the sidebar
+   text, so they split after a dot rather than mid-word. */
+.VPSidebarItem .a-mono {
+  font-family: var(--a-font-mono);
+  font-size: 0.88em;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* ---- Search -----------------------------------------------------------------------------------
+   The default button is borderless and near-invisible on paper. */
+
+.VPNavBarSearch .DocSearch-Button {
+  border: 1px solid var(--a-hairline-strong);
+  border-radius: var(--a-radius-pill);
+  background: var(--a-card);
+  transition: border-color 0.15s ease;
+}
+
+.VPNavBarSearch .DocSearch-Button:hover {
+  border-color: var(--a-accent);
+  box-shadow: none;
+}
+
+.VPNavBarSearch .DocSearch-Button-Placeholder,
+.VPNavBarSearch .DocSearch-Search-Icon {
+  color: var(--a-text-muted);
+}
+
+.VPNavBarSearch .DocSearch-Button-Keys {
+  color: var(--a-text-faint);
+}
+
+/* ---- Prose ----------------------------------------------------------------------------------- */
+
+.vp-doc h1 {
+  font-size: 40px;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.vp-doc h2 {
+  margin-top: 3rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--a-hairline);
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.vp-doc h3 {
+  font-size: 20px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.vp-doc p,
+.vp-doc li {
+  font-size: 16.5px;
+  line-height: 1.62;
+  color: var(--a-text-body);
+}
+
+.vp-doc a {
+  color: var(--a-accent);
+  font-weight: 500;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.vp-doc :not(pre) > code {
+  padding: 0.15em 0.4em;
+  border: 1px solid var(--a-chip-border);
+  border-radius: var(--a-radius-chip-sm);
+  background: var(--a-chip);
+  color: var(--a-text-secondary);
+  font-size: 0.84em;
+}
+
+/* The surface follows the Shiki theme rather than being forced dark: a black slab on paper is the
+   heaviest thing on the page, and in light mode it fought everything around it. */
+.vp-doc div[class*='language-'] {
+  border: 1px solid var(--a-hairline);
+  border-radius: var(--a-radius-panel-sm);
+}
+
+.vp-doc div[class*='language-'] code {
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.vp-doc div[class*='language-'] .lang {
+  color: var(--a-text-faintest);
+}
+
+/* Rows are separated by hairlines, not by fills. Zebra striping on a warm paper background reads as
+   two competing surfaces, and it put the first cell's text hard against the tint's edge. */
+.vp-doc table {
+  display: table;
+  width: 100%;
+  margin: 1.75rem 0;
+  border-collapse: collapse;
+}
+
+.vp-doc tr,
+.vp-doc tr:nth-child(2n) {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--a-hairline);
+}
+
+.vp-doc thead tr {
+  border-bottom: 1px solid var(--a-hairline-strong);
+}
+
+.vp-doc th,
+.vp-doc td {
+  border: none;
+  padding: 0.85rem 1.25rem 0.85rem 0;
+  font-size: 15.5px;
+  vertical-align: baseline;
+}
+
+.vp-doc th:last-child,
+.vp-doc td:last-child {
+  padding-right: 0;
+}
+
+.vp-doc th {
+  padding-bottom: 0.6rem;
+  background: transparent;
+  font-family: var(--a-font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--a-text-faint);
+}
+
+.vp-doc blockquote {
+  border-left: 2px solid var(--a-hairline-strong);
+  color: var(--a-text-muted);
+}
+
+/* One hairline the whole way round, on every callout. Kind is carried by the title's colour rather
+   than by an accent edge. */
+.vp-doc .custom-block {
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--a-hairline);
+  border-radius: var(--a-radius-chip);
+  background: var(--vp-c-bg-soft);
+  color: var(--a-text-body);
+  font-size: 15.5px;
+}
+
+.vp-doc .custom-block-title {
+  margin-bottom: 0.4rem;
+  color: var(--a-ink);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.vp-doc .custom-block.warning .custom-block-title {
+  color: #b4611b;
+}
+
+.vp-doc .custom-block.danger .custom-block-title {
+  color: #c0392b;
+}
+
+.dark .vp-doc .custom-block.warning .custom-block-title {
+  color: #dc9a5e;
+}
+
+.dark .vp-doc .custom-block.danger .custom-block-title {
+  color: #e8796b;
+}
+
+.vp-doc .custom-block p {
+  font-size: 15.5px;
+}
+
+.vp-doc .custom-block a {
+  color: var(--a-accent);
+}
+
+/* ---- Footer ---------------------------------------------------------------------------------- */
+
+.VPFooter {
+  border-top: 1px solid var(--a-hairline);
+  background: transparent;
+}
+
+.VPFooter .message,
+.VPFooter .copyright {
+  font-size: 13.5px;
+  color: var(--a-text-faint);
+}

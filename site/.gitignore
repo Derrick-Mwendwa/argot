@@ -1,3 +1,7 @@
 node_modules/
 .vitepress/cache/
 .vitepress/dist/
+
+# Written by scripts/generate-reference.mts from the Dokka JSON. Package directories only; the
+# reference's own index.md is hand-written and tracked.
+/api/*/

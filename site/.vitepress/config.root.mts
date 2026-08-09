@@ -6,7 +6,7 @@ export const rootConfig: UserConfig<DefaultTheme.Config> = {
   ...sharedConfig,
   base: '/',
   outDir: '../dist/root',
-  srcExclude: ['learn/**'],
+  srcExclude: ['learn/**', 'api/**', 'docs-home.md', 'docs-news.md'],
   themeConfig: {
     ...sharedConfig.themeConfig,
     nav: [

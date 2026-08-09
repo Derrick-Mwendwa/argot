@@ -1,0 +1,76 @@
+# Sveltia CMS — the visual editor at /admin.
+#
+# Paths are repository-relative because the CMS commits straight to the repo; what it writes is the
+# same Markdown you would write by hand, so nothing here is a second source of truth.
+#
+# Deliberately absent: any collection that would create a *new* guide. Guides transclude compiled
+# regions from docs-samples with `<<<`, and a new guide almost always needs a new sample, which needs
+# a compiler. Prose in an existing guide is safe to edit here; new examples are not.
+#
+# See CONTRIBUTING.md for the one-time GitHub OAuth setup this needs.
+
+backend:
+  name: github
+  repo: Derrick-Mwendwa/argot
+  branch: main
+  # Points at a deployed sveltia-cms-auth worker; without it GitHub has nowhere to send the OAuth
+  # callback. Replace with your own worker's URL.
+  base_url: https://argot-cms-auth.draftcode.workers.dev
+
+# Commits land on main and trigger the docs workflow, so an edit is live within a couple of minutes.
+publish_mode: simple
+
+media_folder: site/public/media
+public_folder: /media
+
+collections:
+  - name: news
+    label: News
+    label_singular: post
+    folder: site/news/posts
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    preview_path: news/{{slug}}
+    summary: '{{title}} — {{date}}'
+    sortable_fields: [date, title]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: date, label: Date, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
+      - name: tag
+        label: Tag
+        widget: select
+        required: false
+        options: [release, project, note]
+      - name: body
+        label: Body
+        widget: markdown
+        hint: >
+          Put <!-- more --> after the opening paragraph. Everything above it becomes the excerpt on
+          the news index.
+
+  - name: how-to
+    label: How-to guides
+    label_singular: guide
+    folder: site/learn/how-to
+    create: false
+    delete: false
+    extension: md
+    format: frontmatter
+    fields:
+      - name: body
+        label: Body
+        widget: markdown
+        hint: >
+          Lines beginning with <<< pull in compiled code from docs-samples. Leave them alone unless
+          you are also changing that module.
+
+  - name: explanation
+    label: Explanation
+    label_singular: page
+    folder: site/learn/explanation
+    create: false
+    delete: false
+    extension: md
+    format: frontmatter
+    fields:
+      - { name: body, label: Body, widget: markdown }
