@@ -16,8 +16,16 @@ public class ParsedValues internal constructor(
         return values[name] as T
     }
 
-    /** Returns the value bound to [name] cast to [T], or `null` if it was absent. */
+    /**
+     * Returns the value bound to [name] cast to [T], or `null` if it was not supplied.
+     *
+     * `null` means "declared but absent", never "no such parameter" — a name that was not part of
+     * the parse is a mistake rather than a missing value.
+     *
+     * @throws IllegalArgumentException if no parameter named [name] was part of the parse.
+     */
     public fun <T> valueOrNull(name: String): T? {
+        require(values.containsKey(name)) { "no parameter named '$name' was parsed" }
         @Suppress("UNCHECKED_CAST")
         return values[name] as T?
     }

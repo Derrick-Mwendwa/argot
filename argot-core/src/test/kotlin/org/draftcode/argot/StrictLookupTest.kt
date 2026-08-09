@@ -19,6 +19,7 @@ class StrictLookupTest {
                     OptionSpec(names = listOf("--tag"), converter = StringConverter, multiple = true),
                     OptionSpec(names = listOf("--port"), converter = IntConverter, default = 80),
                     FlagSpec(names = listOf("--verbose")),
+                    OptionSpec(names = listOf("--missing"), converter = StringConverter),
                 ),
             ),
             arrayOf(*argv),
@@ -37,14 +38,22 @@ class StrictLookupTest {
     }
 
     @Test
+    fun `valueOrNull still answers null for a declared parameter that was not supplied`() {
+        assertEquals(null, parsed().valueOrNull<String>("--missing"))
+    }
+
+    @Test
     fun `an undeclared name is rejected rather than answered`() {
         val values = parsed()
-        assertTrue("no parameter named '--nope'" in assertFailsWith<IllegalArgumentException> {
-            values.flag("--nope")
-        }.message.orEmpty())
-        assertTrue("no parameter named '--nope'" in assertFailsWith<IllegalArgumentException> {
-            values.list<String>("--nope")
-        }.message.orEmpty())
+        for (lookup in listOf<() -> Any?>(
+            { values.flag("--nope") },
+            { values.list<String>("--nope") },
+            { values.valueOrNull<String>("--nope") },
+        )) {
+            assertTrue("no parameter named '--nope'" in assertFailsWith<IllegalArgumentException> {
+                lookup()
+            }.message.orEmpty())
+        }
     }
 
     @Test

@@ -8,24 +8,26 @@ All notable changes to Argot are recorded here. The format follows
 
 ### Fixed
 
-- `ParsedValues.flag` and `ParsedValues.list` no longer answer a name that was never declared.
-  Both used to swallow the mistake, so a typo produced a silently wrong parse rather than an error;
-  `value` has always rejected it. They also reject a name of the wrong kind, which the previous
-  `as?` cast hid.
+- `ParsedValues.flag`, `.list` and `.valueOrNull` no longer answer a name that was never declared.
+  All three used to swallow the mistake, so a typo produced a silently wrong parse rather than an
+  error; `value` has always rejected it. `flag` and `list` also reject a name of the wrong kind,
+  which the previous `as?` cast hid.
 
   ```kotlin
   // before — no such parameter, no complaint
-  parsed.flag("--verbsoe")        // false
-  parsed.list<String>("--tags")   // []
-  parsed.flag("--count")          // false, for an Int option
+  parsed.flag("--verbsoe")             // false
+  parsed.list<String>("--tags")        // []
+  parsed.valueOrNull<String>("--hsot") // null
+  parsed.flag("--count")               // false, for an Int option
 
   // after
-  parsed.flag("--verbsoe")        // IllegalArgumentException: no parameter named '--verbsoe'
-  parsed.flag("--count")          // IllegalArgumentException: '--count' is not a flag
+  parsed.flag("--verbsoe")             // IllegalArgumentException: no parameter named '--verbsoe'
+  parsed.flag("--count")               // IllegalArgumentException: '--count' is not a flag
   ```
 
-  A declared parameter that was simply not supplied is unaffected: flags still answer their default
-  and `multiple` parameters still answer an empty list.
+  A declared parameter that was simply not supplied is unaffected: flags still answer their default,
+  `multiple` parameters still answer an empty list, and `valueOrNull` still answers `null`. `null`
+  now means "declared but absent" and nothing else.
 
 - A `Converter` that throws `ArgotConversionException` now has its message shown to the user. It was
   discarded, so the explanation a converter author wrote was unreachable — including the built-in
