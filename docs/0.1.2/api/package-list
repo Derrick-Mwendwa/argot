@@ -1,7 +1,0 @@
-$dokka.format:html-v1
-$dokka.linkExtension:html
-
-module:argot-annotations
-org.draftcode.argot.annotations
-module:argot-core
-org.draftcode.argot

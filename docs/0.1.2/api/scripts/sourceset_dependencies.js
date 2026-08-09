@@ -1,1 +1,0 @@
-sourceset_dependencies = '{":argot-core/main":[],":argot-annotations/main":[]}'
