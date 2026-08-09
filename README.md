@@ -55,7 +55,7 @@ fun main(argv: Array<String>) {
 repositories { mavenCentral() }
 
 dependencies {
-    implementation("org.draftcode:argot-core:0.1.1")
+    implementation("org.draftcode:argot-core:0.1.2")
 }
 ```
 
@@ -71,15 +71,15 @@ The call you end with drives the property type: a bare `option(...)` backs a nul
 ```kotlin
 plugins {
     kotlin("jvm") version "2.3.20"
-    id("com.google.devtools.ksp") version "2.3.9"
+    id("com.google.devtools.ksp") version "2.3.11"
 }
 
 repositories { mavenCentral() }
 
 dependencies {
-    implementation("org.draftcode:argot-core:0.1.1")
-    implementation("org.draftcode:argot-annotations:0.1.1")
-    ksp("org.draftcode:argot-processor:0.1.1")
+    implementation("org.draftcode:argot-core:0.1.2")
+    implementation("org.draftcode:argot-annotations:0.1.2")
+    ksp("org.draftcode:argot-processor:0.1.2")
 }
 ```
 
