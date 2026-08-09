@@ -6,6 +6,51 @@ All notable changes to Argot are recorded here. The format follows
 
 ## Unreleased
 
+### Fixed
+
+- `ParsedValues.flag` and `ParsedValues.list` no longer answer a name that was never declared.
+  Both used to swallow the mistake, so a typo produced a silently wrong parse rather than an error;
+  `value` has always rejected it. They also reject a name of the wrong kind, which the previous
+  `as?` cast hid.
+
+  ```kotlin
+  // before — no such parameter, no complaint
+  parsed.flag("--verbsoe")        // false
+  parsed.list<String>("--tags")   // []
+  parsed.flag("--count")          // false, for an Int option
+
+  // after
+  parsed.flag("--verbsoe")        // IllegalArgumentException: no parameter named '--verbsoe'
+  parsed.flag("--count")          // IllegalArgumentException: '--count' is not a flag
+  ```
+
+  A declared parameter that was simply not supplied is unaffected: flags still answer their default
+  and `multiple` parameters still answer an empty list.
+
+- A `Converter` that throws `ArgotConversionException` now has its message shown to the user. It was
+  discarded, so the explanation a converter author wrote was unreachable — including the built-in
+  converters', which is why a rejected enum value never listed the valid ones.
+
+  ```console
+  # before
+  error: invalid value 'loud' for --level (expected Level)
+
+  # after
+  error: invalid value for --level: 'loud' is not a valid Level (expected one of DEBUG, INFO, WARN, ERROR)
+  ```
+
+  Any other exception out of a converter keeps the previous wording, since its message is written
+  for a stack trace rather than a terminal. Either way the original exception is now attached as the
+  `cause`.
+
+### Changed
+
+- `ArgotParseException` accepts a `cause`, and `ArgotParseException.InvalidValue` carries the
+  converter's explanation as `detail`. Both are new parameters with defaults, so existing calls still
+  compile — but the previous constructors no longer exist as binary signatures, so code compiled
+  against 0.1.x must be recompiled. Neither type is part of the generated-code contract, so a
+  processor and core from different versions are unaffected.
+
 ## 0.1.2 — 2026-08-06
 
 No API or behaviour changes.

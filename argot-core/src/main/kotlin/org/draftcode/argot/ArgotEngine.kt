@@ -175,7 +175,16 @@ public object ArgotEngine {
         try {
             converter.convert(raw)
         } catch (e: Exception) {
-            throw ArgotParseException.InvalidValue(name, raw, converter.typeName)
+            // Only an ArgotConversionException is treated as a deliberate explanation. Anything else
+            // escaping a converter is a bug in it, and its message is written for a stack trace
+            // rather than for someone's terminal.
+            throw ArgotParseException.InvalidValue(
+                name = name,
+                raw = raw,
+                expectedType = converter.typeName,
+                detail = (e as? ArgotConversionException)?.message,
+                cause = e,
+            )
         }
 
     private fun resolveOptions(
