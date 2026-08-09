@@ -80,13 +80,10 @@ Options:
   -h, --help            Show this help message and exit
 ```
 
-::: info Where these outputs come from
-The declarations above are regions of a real file in the repository, and the outputs are asserted by
-tests that run against the published release. They are not transcribed by hand.
-:::
-
 ## What next
 
+- [The same CLI, with annotations](./annotation-style) — build this again the other way, and see
+  that the two produce identical output.
 - [How-to guides](../how-to/) for specific tasks such as custom converters.
 - [Explanation](../explanation/) for why there are two styles and what they share.
-- The [API reference](../../api/) for exact signatures.
+- The [API reference](/api/) for exact signatures.

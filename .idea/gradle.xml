@@ -13,6 +13,8 @@
             <option value="$PROJECT_DIR$/argot-processor" />
             <option value="$PROJECT_DIR$/docs-samples" />
             <option value="$PROJECT_DIR$/sample" />
+            <option value="$PROJECT_DIR$/tools" />
+            <option value="$PROJECT_DIR$/tools/dokka-json" />
           </set>
         </option>
         <option name="myGradleHome" value="" />

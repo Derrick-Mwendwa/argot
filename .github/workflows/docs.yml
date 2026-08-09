@@ -1,10 +1,13 @@
 # Builds and deploys argot.draftcode.org.
 #
-# The site is two VitePress builds plus the Dokka reference, assembled onto the gh-pages branch:
+# The site is two VitePress builds assembled onto the gh-pages branch:
 #
 #   /                  landing and news, unversioned, rebuilt every time
 #   /docs/<version>/   one frozen tree per release, plus `latest` and `dev`
-#   /docs/<version>/api/   Dokka output, copied in beside the guides
+#   /docs/<version>/api/   the reference, rendered by the docs build from api.json
+#
+# `dokkaGenerate` therefore has to run before the site build, not after it: tools/dokka-json writes
+# the api.json that the reference routes read.
 #
 # Version trees accumulate, so this deliberately does NOT use actions/deploy-pages: that replaces the
 # whole site on every run and would delete every previously published version. Instead it commits
@@ -121,13 +124,6 @@ jobs:
         env:
           ARGOT_DOCS_VERSION: ${{ steps.target.outputs.alias }}
         run: npm run build:docs
-
-      - name: Copy the reference into each docs tree
-        run: |
-          for tree in dist/docs/*/; do
-            mkdir -p "$tree/api"
-            cp -r build/dokka/html/. "$tree/api/"
-          done
 
       - name: Check out gh-pages
         run: |

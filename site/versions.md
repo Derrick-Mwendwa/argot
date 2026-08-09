@@ -20,8 +20,7 @@ onMounted(async () => {
 
 # Documentation versions
 
-Each release gets its own tree, built from the repository at that tag. Older versions are never
-edited afterwards, so what you read there is what shipped.
+Each release keeps its own documentation, describing that version and no other.
 
 <div v-if="versions">
   <ul>

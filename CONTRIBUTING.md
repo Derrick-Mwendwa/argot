@@ -94,9 +94,50 @@ Two rules keep the site honest:
   ./gradlew :docs-samples:build -PargotVersion=0.1.2  # against Maven Central
   ```
 
-The API reference is generated from KDoc by Dokka, so it cannot drift — but that also means KDoc
-edits are user-facing documentation edits. Prose in `site/learn/` still needs a human to read it
-before a release; compiling proves the code runs, not that the explanation is still true.
+Because the reference and the landing page are generated, the site needs a Gradle run before it will
+build:
+
+```sh
+./gradlew dokkaGenerate :docs-samples:mirrorData
+```
+
+`dokkaGenerate` writes `build/dokka/html/*/api.json` and `mirrorData` writes the landing page's
+declaration-and-help pairing. `npm run dev` tolerates both being absent — the reference is empty and
+the Mirror is hidden — but a production build fails rather than shipping a page with a hole in it.
+
+### The API reference
+
+The reference is generated from KDoc, so it cannot drift — which also means KDoc edits are
+user-facing documentation edits. What renders it is `tools/dokka-json`, a Dokka plugin that replaces
+Dokka's HTML renderer with one emitting a JSON description of the API; the site turns that into pages
+with its own components under `site/api/`. Dokka does the Kotlin analysis and KDoc parsing; none of
+its markup or styling reaches the site.
+
+If a Dokka upgrade breaks that plugin it breaks as a compile error in `tools/dokka-json`, not as a
+silently unstyled page. Bump `schema` in `ApiJsonRenderer` when the emitted shape changes
+incompatibly, and the matching constant in `site/.vitepress/api/model.mts`.
+
+Prose in `site/learn/` still needs a human to read it before a release; compiling proves the code
+runs, not that the explanation is still true.
+
+### Editing content without a checkout
+
+[argot.draftcode.org/admin](https://argot.draftcode.org/admin) is [Sveltia
+CMS](https://github.com/sveltia/sveltia-cms) — a visual editor that commits Markdown straight to
+`main`. It owns news posts end to end and can edit prose in existing guides. It deliberately cannot
+create a guide: guides transclude compiled regions from `docs-samples`, and a new example needs a
+compiler.
+
+It needs a one-time OAuth setup, because the browser cannot hold a GitHub secret:
+
+1. Create a GitHub OAuth app (**Settings → Developer settings → OAuth Apps**) with the callback URL
+   `https://<your-worker>.workers.dev/callback`.
+2. Deploy [`sveltia-cms-auth`](https://github.com/sveltia/sveltia-cms-auth) to Cloudflare Workers,
+   setting `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` from step 1, and `ALLOWED_DOMAINS` to
+   `argot.draftcode.org`.
+3. Put the worker's URL in `backend.base_url` in `site/public/admin/config.yml`.
+
+Only the client secret is sensitive, and it lives in the worker rather than in this repository.
 
 ## Tests
 

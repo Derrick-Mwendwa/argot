@@ -5,12 +5,15 @@
   "description": "Documentation and learning site for Argot",
   "type": "module",
   "scripts": {
-    "dev": "ARGOT_BUILD=docs vitepress dev",
-    "dev:root": "ARGOT_BUILD=root vitepress dev",
-    "build:root": "ARGOT_BUILD=root vitepress build",
-    "build:docs": "ARGOT_BUILD=docs vitepress build"
+    "dev": "ARGOT_API_OPTIONAL=1 npm run generate:api && ARGOT_BUILD=docs ARGOT_API_OPTIONAL=1 vitepress dev",
+    "dev:root": "ARGOT_API_OPTIONAL=1 npm run generate:api && ARGOT_BUILD=root ARGOT_API_OPTIONAL=1 vitepress dev",
+    "build:root": "npm run generate:api && ARGOT_BUILD=root vitepress build",
+    "build:docs": "npm run generate:api && ARGOT_BUILD=docs vitepress build",
+    "generate:api": "node --experimental-strip-types scripts/generate-reference.mts"
   },
   "devDependencies": {
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
     "vitepress": "1.6.4",
     "vue": "3.5.41"
   }

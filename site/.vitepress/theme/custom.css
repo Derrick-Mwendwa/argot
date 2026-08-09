@@ -1,0 +1,79 @@
+/*
+ * Rules for the parts of the site rendered by our own components rather than by Markdown.
+ *
+ * The reference pages render Vue, so they do not inherit VitePress's `.vp-doc` prose styles; these
+ * restore the ones they need, in the same tokens the rest of the site uses.
+ */
+
+.api-page .api-prose a {
+  color: var(--a-accent);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.api-page .api-prose code,
+.api-page .api-note code {
+  padding: 0.15em 0.4em;
+  border: 1px solid var(--a-chip-border);
+  border-radius: var(--a-radius-chip-sm);
+  background: var(--a-chip);
+  color: var(--a-text-secondary);
+  font-family: var(--a-font-mono);
+  font-size: 0.84em;
+}
+
+/* KDoc fences are rendered by tools/dokka-json, not by Shiki, so they carry no theme of their own
+   and take the neutral surface rather than the terminal's ink. */
+.api-page .api-prose pre {
+  margin: 0.75rem 0;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--a-hairline);
+  border-radius: var(--a-radius-panel-sm);
+  background: var(--vp-c-bg-soft);
+  color: var(--a-text-secondary);
+  overflow-x: auto;
+}
+
+.api-page .api-prose pre code {
+  padding: 0;
+  background: none;
+  color: inherit;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.api-page .api-prose ul,
+.api-page .api-prose ol {
+  margin: 0.6rem 0;
+  padding-left: 1.25rem;
+}
+
+.api-page .api-prose li {
+  margin: 0.25rem 0;
+}
+
+.api-page .api-prose blockquote {
+  margin: 0.75rem 0;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--a-hairline-strong);
+  color: var(--a-text-muted);
+}
+
+.api-page .api-prose table {
+  margin: 0.75rem 0;
+  border-collapse: collapse;
+}
+
+.api-page .api-prose th,
+.api-page .api-prose td {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--a-hairline);
+}
+
+/* The landing page is full-bleed sections, so the page wrapper must not constrain or pad them. */
+.VPPage > .vp-raw,
+.VPContent.is-home {
+  padding: 0;
+}
