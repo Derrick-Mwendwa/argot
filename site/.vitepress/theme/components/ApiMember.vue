@@ -1,9 +1,28 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { Member } from '../../api/model.mts'
 import ApiTokens from './ApiTokens.vue'
 import ApiSource from './ApiSource.vue'
 
-defineProps<{ member: Member }>()
+const props = defineProps<{ member: Member }>()
+
+/**
+ * Everything before the declaration's name, assembled here rather than as separate template spans.
+ *
+ * Vue's compiler strips trailing whitespace from static text that sits on its own line, so the
+ * spaces after `open` and `fun` were being removed at build time and the signature rendered as
+ * `open overrideval`. Spacing produced by an expression survives.
+ */
+const prefix = computed(() => {
+  const m = props.member
+  const parts = [...(m.modifiers ?? [])]
+  if (m.kind === 'function') parts.push('fun')
+  else if (m.kind === 'property') parts.push(m.mutable ? 'var' : 'val')
+  if (m.typeParameters?.length) {
+    parts.push(`<${m.typeParameters.map((t) => t.name).join(', ')}>`)
+  }
+  return parts.length ? `${parts.join(' ')} ` : ''
+})
 </script>
 
 <template>
@@ -14,14 +33,7 @@ defineProps<{ member: Member }>()
     </h3>
 
     <div class="api-decl">
-      <span v-if="member.modifiers?.length" class="api-kw">{{ member.modifiers.join(' ') }} </span>
-      <span v-if="member.kind === 'function'" class="api-kw">fun </span>
-      <span v-else-if="member.kind === 'property'" class="api-kw">
-        {{ member.mutable ? 'var' : 'val' }}&nbsp;
-      </span>
-      <span v-if="member.typeParameters?.length" class="api-kw">
-        &lt;{{ member.typeParameters.map((t) => t.name).join(', ') }}&gt;&nbsp;
-      </span>
+      <span v-if="prefix" class="api-kw">{{ prefix }}</span>
       <template v-if="member.receiver">
         <ApiTokens :tokens="member.receiver" /><span>.</span>
       </template>
