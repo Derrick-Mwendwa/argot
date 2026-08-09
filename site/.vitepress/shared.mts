@@ -31,7 +31,7 @@ export const sharedConfig: UserConfig<DefaultTheme.Config> = {
   markdown: { theme: { light: argotLight, dark: argotDark } },
   head: [
     ['link', { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' }],
-    ['meta', { name: 'theme-color', content: '#5a4bd6' }],
+    ['meta', { name: 'theme-color', content: '#5B4BEA' }],
   ],
   themeConfig: {
     logo: '/logo.svg',
