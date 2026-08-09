@@ -58,6 +58,10 @@ export const docsConfig: UserConfig<DefaultTheme.Config> = {
   },
   themeConfig: {
     ...sharedConfig.themeConfig,
+    // VitePress uses logoLink verbatim rather than passing it through withBase, so this is the one
+    // place a versioned page can address the site root. target forces a real navigation, since the
+    // root is a separate build the router knows nothing about.
+    logoLink: { link: '/', target: '_self' },
     search: {
       provider: 'local',
       options: {

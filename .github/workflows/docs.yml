@@ -159,17 +159,17 @@ jobs:
 
           # Rebuild the version index from what is actually on the branch, so it can never claim a
           # version that is not there.
+          #
+          # Only `latest` is advertised for now. `dev` documents unreleased code, and 0.1.0 and 0.1.1
+          # predate this site so they have no tree to link to — which would leave a version list
+          # whose only real entry is the one `latest` already points at. Those trees stay published
+          # and reachable by URL; they are just not offered. Widen this once a second release is
+          # documented.
           python3 - <<'PY'
-          import json, os, re
+          import json, os
           root = "gh-pages/docs"
-          names = sorted(os.listdir(root)) if os.path.isdir(root) else []
-          def sort_key(n):
-              m = re.match(r"^(\d+)\.(\d+)\.(\d+)$", n)
-              return (0, tuple(-int(p) for p in m.groups())) if m else (1, n)
-          special = [n for n in names if n in ("latest", "dev")]
-          releases = sorted([n for n in names if n not in ("latest", "dev")], key=sort_key)
-          out = [{"id": n, "label": n if n != "latest" else "latest (current release)"}
-                 for n in special + releases]
+          names = set(os.listdir(root)) if os.path.isdir(root) else set()
+          out = [{"id": "latest", "label": "latest (current release)"}] if "latest" in names else []
           with open("gh-pages/versions.json", "w") as f:
               json.dump(out, f, indent=2)
           print("versions.json ->", [v["id"] for v in out])
