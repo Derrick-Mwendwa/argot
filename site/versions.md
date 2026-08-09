@@ -35,7 +35,4 @@ Each release keeps its own documentation, describing that version and no other.
 <p v-else-if="failed">Version list unavailable. Try <a href="/docs/latest/learn/">the latest docs</a>.</p>
 <p v-else>Loading…</p>
 
-::: tip Which should I read?
-`latest` always points at the newest release. `dev` tracks the tip of `main` and documents code that
-is not published yet.
-:::
+`latest` always points at the newest release. Older releases appear here as they are documented.
