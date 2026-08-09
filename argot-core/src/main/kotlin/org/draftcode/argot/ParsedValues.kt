@@ -22,12 +22,29 @@ public class ParsedValues internal constructor(
         return values[name] as T?
     }
 
-    /** Returns the state of the flag [name] (its default if it was never supplied). */
-    public fun flag(name: String): Boolean = (values[name] as? Boolean) ?: false
+    /**
+     * Returns the state of the flag [name] (its default if it was never supplied).
+     *
+     * @throws IllegalArgumentException if no flag named [name] was part of the parse.
+     */
+    public fun flag(name: String): Boolean {
+        require(values.containsKey(name)) { "no parameter named '$name' was parsed" }
+        val value = values[name]
+        require(value is Boolean) { "'$name' is not a flag" }
+        return value
+    }
 
-    /** Returns the accumulated list bound to a `multiple` parameter [name] (empty if absent). */
+    /**
+     * Returns the accumulated list bound to a `multiple` parameter [name], empty when it was never
+     * supplied.
+     *
+     * @throws IllegalArgumentException if [name] was not part of the parse, or is not `multiple`.
+     */
     public fun <T> list(name: String): List<T> {
+        require(values.containsKey(name)) { "no parameter named '$name' was parsed" }
+        val value = values[name]
+        require(value is List<*>) { "'$name' is not a 'multiple' parameter" }
         @Suppress("UNCHECKED_CAST")
-        return (values[name] as? List<T>) ?: emptyList()
+        return value as List<T>
     }
 }

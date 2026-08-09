@@ -44,13 +44,14 @@ class GuideSamplesTest {
         assertEquals(Duration(30), TimeoutArgs().parse(emptyArray()).timeout)
     }
 
-    // The converter's own message is currently discarded by ArgotEngine.convert, which reports
-    // only the type name. The guide says so rather than promising a message users will not see.
     @Test
-    fun `a rejected value is reported with the converter's type name`() {
+    fun `a rejected value carries the converter's own message`() {
         val failure =
             assertFailsWith<ArgotParseException> { TimeoutArgs().parse(arrayOf("-t", "soon")) }
-        assertEquals("invalid value 'soon' for -t (expected Duration)", failure.message)
+        assertEquals(
+            "invalid value for -t: 'soon' is not a duration (expected 30s, 5m, or 2h)",
+            failure.message,
+        )
     }
 
     @Test
@@ -85,10 +86,14 @@ class GuideSamplesTest {
     }
 
     @Test
-    fun `an enum option names the type when given a bad value`() {
+    fun `an enum option lists its constants when given a bad value`() {
         val failure =
             assertFailsWith<ArgotParseException> { LogArgs().parse(arrayOf("--level", "loud")) }
-        assertEquals("invalid value 'loud' for --level (expected Level)", failure.message)
+        assertEquals(
+            "invalid value for --level: 'loud' is not a valid Level " +
+                "(expected one of DEBUG, INFO, WARN, ERROR)",
+            failure.message,
+        )
     }
 
     @Test
@@ -134,6 +139,6 @@ class AnnotationTutorialTest {
     fun `a bad value is rejected the same way`() {
         val failure =
             assertFailsWith<ArgotParseException> { parseGreetCommand(arrayOf("--count", "banana")) }
-        assertEquals("invalid value 'banana' for --count (expected Int)", failure.message)
+        assertEquals("invalid value for --count: 'banana' is not a valid Int", failure.message)
     }
 }

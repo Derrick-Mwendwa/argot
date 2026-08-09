@@ -85,7 +85,7 @@ HELLO, ADA!
 
 $ greet --count banana
 Usage: greet [options]
-error: invalid value 'banana' for --count (expected Int)
+error: invalid value for --count: 'banana' is not a valid Int
 ```
 
 ## What the processor actually wrote

@@ -35,24 +35,31 @@ Options:
   --timeout, -t <Duration>   Give up after (default: Duration(seconds=30))
 ```
 
-and in the message when a value is rejected:
+## Your message is what the user sees
+
+Throw `ArgotConversionException` and its message replaces the generic wording, because you know what
+you wanted and the parser only knows the type's name:
+
+```console
+$ fetch --timeout soon
+error: invalid value for -t: 'soon' is not a duration (expected 30s, 5m, or 2h)
+```
+
+Quote the offending value yourself, as the example above does — the parser does not repeat it.
+
+## Throw anything, but prefer `ArgotConversionException`
+
+Any exception out of `convert` is treated as a rejected value, so `require(...)` and `toIntOrNull()
+?: throw ...` both work. Only `ArgotConversionException` has its message shown, though: anything else
+escaping a converter is a bug in it, and its message is written for a stack trace rather than for
+someone's terminal. Those fall back to the type name:
 
 ```console
 $ fetch --timeout soon
 error: invalid value 'soon' for -t (expected Duration)
 ```
 
-::: warning Your exception's message is not shown
-Whatever you throw, the reported message is built from `typeName` alone — the text passed to
-`ArgotConversionException` is discarded rather than chained. Put anything the user needs to see into
-`typeName`.
-:::
-
-## Throw anything, but prefer `ArgotConversionException`
-
-Any exception out of `convert` is treated as a rejected value, so `require(...)` and `toIntOrNull()
-?: throw ...` both work. `ArgotConversionException` is the documented choice and states the intent
-plainly to anyone reading your converter.
+Either way the original exception is kept as the `cause`, so nothing is lost from a stack trace.
 
 ## See also
 

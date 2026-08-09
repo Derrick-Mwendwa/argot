@@ -24,23 +24,14 @@ $ log --level Warn
 The comparison is against each constant's name, so the value the user types and the constant you
 declared do not have to agree on case — only on spelling.
 
-## Bad values name the type
+## Bad values list the valid ones
 
 ```console
 $ log --level loud
-error: invalid value 'loud' for --level (expected Level)
+error: invalid value for --level: 'loud' is not a valid Level (expected one of DEBUG, INFO, WARN, ERROR)
 ```
 
-::: tip Listing the valid values
-The message names the type but does not enumerate the constants. If your enum's name is not
-self-explanatory, put the options in the option's help text — that is what users see on `--help`:
-
-```kotlin
-val level: Level by option("--level", "-l", help = "One of debug, info, warn, error")
-    .enum<Level>()
-    .default(Level.INFO)
-```
-:::
+You do not have to repeat the constants in the help text — a rejected value names them all.
 
 ## Defaults are typed
 

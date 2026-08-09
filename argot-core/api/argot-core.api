@@ -9,7 +9,8 @@ public final class org/draftcode/argot/ArgotEngine {
 }
 
 public abstract class org/draftcode/argot/ArgotParseException : java/lang/Exception {
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getUsage ()Ljava/lang/String;
 }
 
@@ -19,7 +20,9 @@ public final class org/draftcode/argot/ArgotParseException$DuplicateValue : org/
 }
 
 public final class org/draftcode/argot/ArgotParseException$InvalidValue : org/draftcode/argot/ArgotParseException {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDetail ()Ljava/lang/String;
 	public final fun getExpectedType ()Ljava/lang/String;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getRaw ()Ljava/lang/String;
