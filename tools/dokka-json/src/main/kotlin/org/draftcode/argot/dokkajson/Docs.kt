@@ -47,6 +47,24 @@ internal class DocRenderer(private val ownPackages: Set<String>) {
         tag.children.forEach { appendText(it) }
     }
 
+    /**
+     * Text of a code block, keeping its line structure.
+     *
+     * Dokka splits a fenced block into one [Text] per line joined by [Br], so [appendText] — which
+     * only concatenates bodies — collapses the whole sample onto a single line.
+     */
+    private fun StringBuilder.appendCode(tag: DocTag) {
+        when (tag) {
+            is Text -> append(tag.body)
+            is Br -> append('\n')
+            is P -> {
+                tag.children.forEach { appendCode(it) }
+                append('\n')
+            }
+            else -> tag.children.forEach { appendCode(it) }
+        }
+    }
+
     // Named appendTag rather than append: an `append(DocTag)` extension loses overload resolution
     // to StringBuilder's own append(Any?), which silently emits the tag's toString().
     private fun StringBuilder.appendTag(tag: DocTag) {
@@ -78,7 +96,7 @@ internal class DocRenderer(private val ownPackages: Set<String>) {
             is CodeBlock, is Pre -> {
                 val lang = tag.params["lang"] ?: "kotlin"
                 append("<pre><code class=\"language-").append(escape(lang)).append("\">")
-                append(escape(buildString { appendText(tag) }))
+                append(escape(buildString { appendCode(tag) }))
                 append("</code></pre>")
             }
 
