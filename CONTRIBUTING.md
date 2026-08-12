@@ -120,25 +120,6 @@ incompatibly, and the matching constant in `site/.vitepress/api/model.mts`.
 Prose in `site/learn/` still needs a human to read it before a release; compiling proves the code
 runs, not that the explanation is still true.
 
-### Editing content without a checkout
-
-[argot.draftcode.org/admin](https://argot.draftcode.org/admin) is [Sveltia
-CMS](https://github.com/sveltia/sveltia-cms) — a visual editor that commits Markdown straight to
-`main`. It owns news posts end to end and can edit prose in existing guides. It deliberately cannot
-create a guide: guides transclude compiled regions from `docs-samples`, and a new example needs a
-compiler.
-
-It needs a one-time OAuth setup, because the browser cannot hold a GitHub secret:
-
-1. Create a GitHub OAuth app (**Settings → Developer settings → OAuth Apps**) with the callback URL
-   `https://<your-worker>.workers.dev/callback`.
-2. Deploy [`sveltia-cms-auth`](https://github.com/sveltia/sveltia-cms-auth) to Cloudflare Workers,
-   setting `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` from step 1, and `ALLOWED_DOMAINS` to
-   `argot.draftcode.org`.
-3. Put the worker's URL in `backend.base_url` in `site/public/admin/config.yml`.
-
-Only the client secret is sensitive, and it lives in the worker rather than in this repository.
-
 ## Tests
 
 Every behavioural change needs a test. The suites are:

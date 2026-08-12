@@ -47,11 +47,19 @@ All notable changes to Argot are recorded here. The format follows
 
 ### Changed
 
+- Dropped the visual content editor that briefly shipped at `/admin`. Posts and guides are edited as
+  Markdown in the repository.
+
 - `ArgotParseException` accepts a `cause`, and `ArgotParseException.InvalidValue` carries the
   converter's explanation as `detail`. Both are new parameters with defaults, so existing calls still
   compile — but the previous constructors no longer exist as binary signatures, so code compiled
   against 0.1.x must be recompiled. Neither type is part of the generated-code contract, so a
   processor and core from different versions are unaffected.
+
+### Internal
+
+- Updated the Gradle wrapper to 9.7.0, JUnit to 6.1.3, and `actions/setup-node` to v7. All are
+  build-only; a consumer cannot observe any of them.
 
 ## 0.1.2 — 2026-08-06
 
